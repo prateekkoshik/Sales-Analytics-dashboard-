@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Intelligence Dashboard 2025</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --bg2: #141720;
+    --bg3: #1c2030;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --text2: #8b90a0;
+    --text3: #5a6070;
+    --accent: #5b7fff;
+    --accent2: #7c3aed;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --teal: #14b8a6;
+    --pink: #ec4899;
+    --r: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  .badge-live { background: rgba(34,197,94,0.12); color: var(--green); border-color: rgba(34,197,94,0.25); }
+  .badge-year { background: rgba(91,127,255,0.12); color: var(--accent); border-color: rgba(91,127,255,0.25); }
+
+  /* ─── FILTERS ─── */
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    padding: 14px 28px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+  select {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 6px 28px 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b90a0'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    cursor: pointer;
+    min-width: 130px;
+  }
+  select:focus { outline: none; border-color: var(--accent); }
+  .date-inputs { display: flex; align-items: center; gap: 6px; }
+  input[type="date"] {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    color-scheme: dark;
+  }
+  input[type="date"]:focus { outline: none; border-color: var(--accent); }
+  .date-sep { color: var(--text3); font-size: 12px; }
+  .btn-reset {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── MAIN LAYOUT ─── */
+  .main { padding: 24px 28px; max-width: 1600px; margin: 0 auto; }
+
+  /* ─── KPI CARDS ─── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--border2); }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .kpi-card.c-blue::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .kpi-card.c-green::before { background: linear-gradient(90deg, var(--green), transparent); }
+  .kpi-card.c-amber::before { background: linear-gradient(90deg, var(--amber), transparent); }
+  .kpi-card.c-teal::before { background: linear-gradient(90deg, var(--teal), transparent); }
+  .kpi-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  .kpi-card.c-blue .kpi-icon { background: rgba(91,127,255,0.15); }
+  .kpi-card.c-green .kpi-icon { background: rgba(34,197,94,0.15); }
+  .kpi-card.c-amber .kpi-icon { background: rgba(245,158,11,0.15); }
+  .kpi-card.c-teal .kpi-icon { background: rgba(20,184,166,0.15); }
+  .kpi-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 500; margin-bottom: 6px; }
+  .kpi-value { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; font-family: 'DM Mono', monospace; }
+  .kpi-card.c-blue .kpi-value { color: var(--accent); }
+  .kpi-card.c-green .kpi-value { color: var(--green); }
+  .kpi-card.c-amber .kpi-value { color: var(--amber); }
+  .kpi-card.c-teal .kpi-value { color: var(--teal); }
+  .kpi-meta { font-size: 11px; color: var(--text3); margin-top: 8px; }
+
+  /* ─── CHARTS GRID ─── */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .charts-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .charts-grid-full {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .chart-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .chart-card:hover { border-color: var(--border2); }
+  .chart-card.span2 { grid-column: span 2; }
+  .chart-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .chart-title { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
+  .chart-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .chart-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    background: rgba(91,127,255,0.12);
+    color: var(--accent);
+  }
+  .chart-wrap { position: relative; }
+
+  /* ─── TOP/BOTTOM PRODUCTS ─── */
+  .product-list { display: flex; flex-direction: column; gap: 8px; }
+  .product-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border-radius: 7px;
+    border: 1px solid var(--border);
+  }
+  .product-rank {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .rank-top { background: rgba(91,127,255,0.2); color: var(--accent); }
+  .rank-bot { background: rgba(239,68,68,0.15); color: var(--red); }
+  .product-info { flex: 1; min-width: 0; }
+  .product-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .product-cat { font-size: 10px; color: var(--text3); margin-top: 1px; }
+  .product-sales { font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+  .product-sales.top { color: var(--green); }
+  .product-sales.bot { color: var(--red); }
+  .product-bar-wrap { height: 3px; background: var(--bg3); border-radius: 2px; margin-top: 6px; }
+  .product-bar { height: 3px; border-radius: 2px; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text3);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ─── CUSTOM LEGEND ─── */
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ─── SCATTER TABLE ─── */
+  .insight-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .insight-row:last-child { border-bottom: none; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .charts-grid, .charts-grid-3 { grid-template-columns: 1fr; }
+    .chart-card.span2 { grid-column: span 1; }
+    .main { padding: 16px; }
+    .filters { padding: 12px 16px; }
+    .header { padding: 14px 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 500px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .kpi-value { font-size: 20px; }
+  }
+
+  /* ─── NO DATA ─── */
+  .no-data {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%;
+    color: var(--text3);
+    font-size: 12px;
+  }
+
+  /* ─── TOOLTIP ─── */
+  .tippy {
+    position: fixed;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 999;
+    min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo-mark">📊</div>
+    <div>
+      <div class="header-title">Sales Intelligence Dashboard</div>
+      <div class="header-sub">FY 2025 — 500 orders across 10 cities</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge badge-live">● Live</span>
+    <span class="badge badge-year">2025</span>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">Date</span>
+    <div class="date-inputs">
+      <input type="date" id="dateFrom" value="2025-01-01">
+      <span class="date-sep">→</span>
+      <input type="date" id="dateTo" value="2025-12-31">
+    </div>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">City</span>
+    <select id="filterCity"><option value="">All Cities</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Category</span>
+    <select id="filterCat"><option value="">All Categories</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">Rep</span>
+    <select id="filterRep"><option value="">All Reps</option></select>
+  </div>
+  <button class="btn-reset" onclick="resetFilters()">↺ Reset</button>
+</div>
+
+<main class="main">
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card c-blue">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">Total Sales</div>
+      <div class="kpi-value" id="kpi-sales">—</div>
+      <div class="kpi-meta" id="kpi-sales-meta"></div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-label">Total Profit</div>
+      <div class="kpi-value" id="kpi-profit">—</div>
+      <div class="kpi-meta" id="kpi-profit-meta"></div>
+    </div>
+    <div class="kpi-card c-amber">
+      <div class="kpi-icon">📦</div>
+      <div class="kpi-label">Total Orders</div>
+      <div class="kpi-value" id="kpi-orders">—</div>
+      <div class="kpi-meta" id="kpi-orders-meta"></div>
+    </div>
+    <div class="kpi-card c-teal">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-label">Avg Order Value</div>
+      <div class="kpi-value" id="kpi-aov">—</div>
+      <div class="kpi-meta" id="kpi-aov-meta"></div>
+    </div>
+  </div>
+
+  <!-- Row 1: Monthly trend (full) -->
+  <div class="charts-grid-full">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Monthly Sales Trend</div>
+          <div class="chart-sub">Revenue & profit over time</div>
+        </div>
+        <span class="chart-tag">Line Chart</span>
+      </div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartMonthly" role="img" aria-label="Monthly sales trend line chart">Monthly sales trend</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: City + Category -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">City-wise Sales</div>
+          <div class="chart-sub">Total revenue by city</div>
+        </div>
+        <span class="chart-tag">Bar Chart</span>
+      </div>
+      <div class="chart-wrap" id="cityWrap" style="height:280px">
+        <canvas id="chartCity" role="img" aria-label="City-wise sales bar chart">City sales breakdown</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Category Performance</div>
+          <div class="chart-sub">Sales by product category</div>
+        </div>
+        <span class="chart-tag">Bar Chart</span>
+      </div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="chartCat" role="img" aria-label="Category performance chart">Category breakdown</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Sales Rep + Payment Method -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Sales Rep Performance</div>
+          <div class="chart-sub">Revenue generated per rep</div>
+        </div>
+        <span class="chart-tag">Horizontal Bar</span>
+      </div>
+      <div class="chart-wrap" id="repWrap" style="height:280px">
+        <canvas id="chartRep" role="img" aria-label="Sales rep performance bar chart">Rep performance</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Payment Distribution</div>
+          <div class="chart-sub">Orders by payment method</div>
+        </div>
+        <span class="chart-tag">Donut Chart</span>
+      </div>
+      <div id="payLegend" class="legend"></div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartPay" role="img" aria-label="Payment method distribution donut chart">Payment distribution</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 4: Profit vs Sales + Discount Impact -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Profitability Analysis</div>
+          <div class="chart-sub">Profit margin % per category</div>
+        </div>
+        <span class="chart-tag">Bar Chart</span>
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartProfit" role="img" aria-label="Profitability analysis chart">Profit analysis</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Discount Impact on Profit</div>
+          <div class="chart-sub">Avg profit margin by discount tier</div>
+        </div>
+        <span class="chart-tag">Bar Chart</span>
+      </div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartDiscount" role="img" aria-label="Discount impact bar chart">Discount impact</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 5: Top 5 + Bottom 5 Products -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Top 5 Products</div>
+          <div class="chart-sub">Highest revenue products</div>
+        </div>
+        <span class="chart-tag">Ranking</span>
+      </div>
+      <div class="product-list" id="topProducts"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Bottom 5 Products</div>
+          <div class="chart-sub">Lowest revenue products</div>
+        </div>
+        <span class="chart-tag">Ranking</span>
+      </div>
+      <div class="product-list" id="botProducts"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const RAW_DATA = [{"Order_ID":"ORD-1000","Order_Date":"2025-10-07","Customer_Name":"Customer_1","City":"Delhi","Region":"North","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Priya Nair","Units_Sold":8,"Unit_Price":869.78,"Total_Sales":6958.24,"Payment_Method":"Credit Card","Discount_%":0,"Profit":2108.42},{"Order_ID":"ORD-1001","Order_Date":"2025-10-15","Customer_Name":"Customer_2","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Amit Shah","Units_Sold":3,"Unit_Price":1249.46,"Total_Sales":2998.7,"Payment_Method":"UPI","Discount_%":20,"Profit":841.45},{"Order_ID":"ORD-1002","Order_Date":"2025-03-23","Customer_Name":"Customer_3","City":"Jaipur","Region":"North","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Sneha Patel","Units_Sold":19,"Unit_Price":1535.32,"Total_Sales":29171.08,"Payment_Method":"Net Banking","Discount_%":0,"Profit":9557.68},{"Order_ID":"ORD-1003","Order_Date":"2025-06-26","Customer_Name":"Customer_4","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Priya Nair","Units_Sold":11,"Unit_Price":690.61,"Total_Sales":6457.2,"Payment_Method":"Cash","Discount_%":15,"Profit":833.08},{"Order_ID":"ORD-1004","Order_Date":"2025-05-31","Customer_Name":"Customer_5","City":"Hyderabad","Region":"South","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Kiran Kumar","Units_Sold":4,"Unit_Price":4870.96,"Total_Sales":16561.26,"Payment_Method":"Cash","Discount_%":15,"Profit":2047.64},{"Order_ID":"ORD-1005","Order_Date":"2025-02-10","Customer_Name":"Customer_6","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Divya Mehta","Units_Sold":3,"Unit_Price":419.96,"Total_Sales":1196.89,"Payment_Method":"UPI","Discount_%":5,"Profit":397.27},{"Order_ID":"ORD-1006","Order_Date":"2025-05-17","Customer_Name":"Customer_7","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Sneha Patel","Units_Sold":12,"Unit_Price":980.74,"Total_Sales":10591.99,"Payment_Method":"Credit Card","Discount_%":10,"Profit":1724.93},{"Order_ID":"ORD-1007","Order_Date":"2025-11-24","Customer_Name":"Customer_8","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Kiran Kumar","Units_Sold":8,"Unit_Price":984.33,"Total_Sales":6693.44,"Payment_Method":"Cash","Discount_%":15,"Profit":1211.41},{"Order_ID":"ORD-1008","Order_Date":"2025-07-25","Customer_Name":"Customer_9","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Arjun Singh","Units_Sold":2,"Unit_Price":1299.43,"Total_Sales":2598.86,"Payment_Method":"Debit Card","Discount_%":0,"Profit":887.55},{"Order_ID":"ORD-1009","Order_Date":"2025-11-26","Customer_Name":"Customer_10","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Divya Mehta","Units_Sold":11,"Unit_Price":1220.61,"Total_Sales":11412.7,"Payment_Method":"Net Banking","Discount_%":15,"Profit":2495.84},{"Order_ID":"ORD-1010","Order_Date":"2025-10-26","Customer_Name":"Customer_11","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Priya Nair","Units_Sold":18,"Unit_Price":2787.09,"Total_Sales":37625.72,"Payment_Method":"Net Banking","Discount_%":25,"Profit":10361.21},{"Order_ID":"ORD-1011","Order_Date":"2025-03-20","Customer_Name":"Customer_12","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":636.37,"Total_Sales":10181.92,"Payment_Method":"UPI","Discount_%":0,"Profit":3648.5},{"Order_ID":"ORD-1012","Order_Date":"2025-10-11","Customer_Name":"Customer_13","City":"Kolkata","Region":"East","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Sneha Patel","Units_Sold":13,"Unit_Price":3060.26,"Total_Sales":33815.87,"Payment_Method":"Credit Card","Discount_%":15,"Profit":8749.33},{"Order_ID":"ORD-1013","Order_Date":"2025-08-11","Customer_Name":"Customer_14","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Arjun Singh","Units_Sold":9,"Unit_Price":3889.27,"Total_Sales":31503.09,"Payment_Method":"UPI","Discount_%":10,"Profit":4204.58},{"Order_ID":"ORD-1014","Order_Date":"2025-06-02","Customer_Name":"Customer_15","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Kiran Kumar","Units_Sold":6,"Unit_Price":2636.87,"Total_Sales":15821.22,"Payment_Method":"Cash","Discount_%":0,"Profit":5713.92},{"Order_ID":"ORD-1015","Order_Date":"2025-11-03","Customer_Name":"Customer_16","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Rahul Gupta","Units_Sold":6,"Unit_Price":2789.02,"Total_Sales":13387.3,"Payment_Method":"Debit Card","Discount_%":20,"Profit":5027.57},{"Order_ID":"ORD-1016","Order_Date":"2025-02-10","Customer_Name":"Customer_17","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Rahul Gupta","Units_Sold":10,"Unit_Price":1349.37,"Total_Sales":12819.01,"Payment_Method":"Credit Card","Discount_%":5,"Profit":4658.47},{"Order_ID":"ORD-1017","Order_Date":"2025-03-26","Customer_Name":"Customer_18","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Arjun Singh","Units_Sold":5,"Unit_Price":816.28,"Total_Sales":3469.19,"Payment_Method":"Debit Card","Discount_%":15,"Profit":1332.36},{"Order_ID":"ORD-1018","Order_Date":"2025-06-09","Customer_Name":"Customer_19","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Priya Nair","Units_Sold":18,"Unit_Price":3825.27,"Total_Sales":51641.15,"Payment_Method":"Net Banking","Discount_%":25,"Profit":8280.42},{"Order_ID":"ORD-1019","Order_Date":"2025-10-29","Customer_Name":"Customer_20","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":1389.95,"Total_Sales":5559.8,"Payment_Method":"Cash","Discount_%":0,"Profit":1119.89},{"Order_ID":"ORD-1020","Order_Date":"2025-01-17","Customer_Name":"Customer_21","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Amit Shah","Units_Sold":3,"Unit_Price":3597.64,"Total_Sales":10792.92,"Payment_Method":"Debit Card","Discount_%":0,"Profit":1820.58},{"Order_ID":"ORD-1021","Order_Date":"2025-10-20","Customer_Name":"Customer_22","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Rahul Gupta","Units_Sold":16,"Unit_Price":1228.34,"Total_Sales":18670.77,"Payment_Method":"Cash","Discount_%":5,"Profit":5918.74},{"Order_ID":"ORD-1022","Order_Date":"2025-07-01","Customer_Name":"Customer_23","City":"Ahmedabad","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":1113.97,"Total_Sales":15595.58,"Payment_Method":"Net Banking","Discount_%":0,"Profit":4642.72},{"Order_ID":"ORD-1023","Order_Date":"2025-02-25","Customer_Name":"Customer_24","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Divya Mehta","Units_Sold":4,"Unit_Price":490.94,"Total_Sales":1472.82,"Payment_Method":"UPI","Discount_%":25,"Profit":297.2},{"Order_ID":"ORD-1024","Order_Date":"2025-02-08","Customer_Name":"Customer_25","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Sneha Patel","Units_Sold":5,"Unit_Price":2225.03,"Total_Sales":10012.64,"Payment_Method":"Net Banking","Discount_%":10,"Profit":2390.9},{"Order_ID":"ORD-1025","Order_Date":"2025-05-02","Customer_Name":"Customer_26","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Divya Mehta","Units_Sold":18,"Unit_Price":4212.93,"Total_Sales":75832.74,"Payment_Method":"UPI","Discount_%":0,"Profit":28657.96},{"Order_ID":"ORD-1026","Order_Date":"2025-07-19","Customer_Name":"Customer_27","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":4531.73,"Total_Sales":55966.87,"Payment_Method":"Debit Card","Discount_%":5,"Profit":11959.67},{"Order_ID":"ORD-1027","Order_Date":"2025-06-01","Customer_Name":"Customer_28","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Divya Mehta","Units_Sold":18,"Unit_Price":3376.98,"Total_Sales":51667.79,"Payment_Method":"UPI","Discount_%":15,"Profit":7566.18},{"Order_ID":"ORD-1028","Order_Date":"2025-09-29","Customer_Name":"Customer_29","City":"Mumbai","Region":"West","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":11,"Unit_Price":474.39,"Total_Sales":4174.63,"Payment_Method":"UPI","Discount_%":20,"Profit":1014.59},{"Order_ID":"ORD-1029","Order_Date":"2025-05-01","Customer_Name":"Customer_30","City":"Mumbai","Region":"West","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Arjun Singh","Units_Sold":6,"Unit_Price":528.9,"Total_Sales":3173.4,"Payment_Method":"Net Banking","Discount_%":0,"Profit":960.16},{"Order_ID":"ORD-1030","Order_Date":"2025-10-26","Customer_Name":"Customer_31","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Kiran Kumar","Units_Sold":20,"Unit_Price":390.76,"Total_Sales":7815.2,"Payment_Method":"Cash","Discount_%":0,"Profit":1764.42},{"Order_ID":"ORD-1031","Order_Date":"2025-11-27","Customer_Name":"Customer_32","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Priya Nair","Units_Sold":11,"Unit_Price":1345.69,"Total_Sales":12582.2,"Payment_Method":"Debit Card","Discount_%":15,"Profit":1752.24},{"Order_ID":"ORD-1032","Order_Date":"2025-02-07","Customer_Name":"Customer_33","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Amit Shah","Units_Sold":15,"Unit_Price":3181.56,"Total_Sales":38178.72,"Payment_Method":"Cash","Discount_%":20,"Profit":15226.78},{"Order_ID":"ORD-1033","Order_Date":"2025-03-22","Customer_Name":"Customer_34","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Priya Nair","Units_Sold":12,"Unit_Price":4428.15,"Total_Sales":50480.91,"Payment_Method":"Net Banking","Discount_%":5,"Profit":10644.31},{"Order_ID":"ORD-1034","Order_Date":"2025-12-06","Customer_Name":"Customer_35","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":237.55,"Total_Sales":3230.68,"Payment_Method":"Credit Card","Discount_%":20,"Profit":613.23},{"Order_ID":"ORD-1035","Order_Date":"2025-06-25","Customer_Name":"Customer_36","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Amit Shah","Units_Sold":18,"Unit_Price":946.15,"Total_Sales":15327.63,"Payment_Method":"UPI","Discount_%":10,"Profit":4313.95},{"Order_ID":"ORD-1036","Order_Date":"2025-01-23","Customer_Name":"Customer_37","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Rahul Gupta","Units_Sold":2,"Unit_Price":643.03,"Total_Sales":1093.15,"Payment_Method":"Credit Card","Discount_%":15,"Profit":381.3},{"Order_ID":"ORD-1037","Order_Date":"2025-02-27","Customer_Name":"Customer_38","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Priya Nair","Units_Sold":15,"Unit_Price":2848.07,"Total_Sales":36312.89,"Payment_Method":"Credit Card","Discount_%":15,"Profit":9741.73},{"Order_ID":"ORD-1038","Order_Date":"2025-01-22","Customer_Name":"Customer_39","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Arjun Singh","Units_Sold":12,"Unit_Price":2996.05,"Total_Sales":34154.97,"Payment_Method":"Debit Card","Discount_%":5,"Profit":7819.3},{"Order_ID":"ORD-1039","Order_Date":"2025-07-28","Customer_Name":"Customer_40","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Priya Nair","Units_Sold":8,"Unit_Price":3401.28,"Total_Sales":24489.22,"Payment_Method":"Cash","Discount_%":10,"Profit":8180.25},{"Order_ID":"ORD-1040","Order_Date":"2025-06-20","Customer_Name":"Customer_41","City":"Bangalore","Region":"South","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Arjun Singh","Units_Sold":6,"Unit_Price":4430.8,"Total_Sales":26584.8,"Payment_Method":"Net Banking","Discount_%":0,"Profit":4088.96},{"Order_ID":"ORD-1041","Order_Date":"2025-04-24","Customer_Name":"Customer_42","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Arjun Singh","Units_Sold":4,"Unit_Price":2036.2,"Total_Sales":8144.8,"Payment_Method":"UPI","Discount_%":0,"Profit":2912.4},{"Order_ID":"ORD-1042","Order_Date":"2025-06-18","Customer_Name":"Customer_43","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Arjun Singh","Units_Sold":8,"Unit_Price":1270.03,"Total_Sales":7620.18,"Payment_Method":"Debit Card","Discount_%":25,"Profit":1203.52},{"Order_ID":"ORD-1043","Order_Date":"2025-01-15","Customer_Name":"Customer_44","City":"Delhi","Region":"North","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Divya Mehta","Units_Sold":17,"Unit_Price":2118.46,"Total_Sales":28811.06,"Payment_Method":"Credit Card","Discount_%":20,"Profit":5743.34},{"Order_ID":"ORD-1044","Order_Date":"2025-06-10","Customer_Name":"Customer_45","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Rahul Gupta","Units_Sold":2,"Unit_Price":720.33,"Total_Sales":1224.56,"Payment_Method":"Net Banking","Discount_%":15,"Profit":249.45},{"Order_ID":"ORD-1045","Order_Date":"2025-01-01","Customer_Name":"Customer_46","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Sneha Patel","Units_Sold":19,"Unit_Price":1112.38,"Total_Sales":21135.22,"Payment_Method":"Cash","Discount_%":0,"Profit":6607.62},{"Order_ID":"ORD-1046","Order_Date":"2025-11-16","Customer_Name":"Customer_47","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Rahul Gupta","Units_Sold":14,"Unit_Price":535.87,"Total_Sales":5626.64,"Payment_Method":"Debit Card","Discount_%":25,"Profit":2116.92},{"Order_ID":"ORD-1047","Order_Date":"2025-06-01","Customer_Name":"Customer_48","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Kiran Kumar","Units_Sold":10,"Unit_Price":3401.09,"Total_Sales":30609.81,"Payment_Method":"Cash","Discount_%":10,"Profit":6756.2},{"Order_ID":"ORD-1048","Order_Date":"2025-06-04","Customer_Name":"Customer_49","City":"Bangalore","Region":"South","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":3451.13,"Total_Sales":42621.46,"Payment_Method":"Net Banking","Discount_%":5,"Profit":12132.39},{"Order_ID":"ORD-1049","Order_Date":"2025-06-14","Customer_Name":"Customer_50","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Rahul Gupta","Units_Sold":7,"Unit_Price":2263.46,"Total_Sales":12675.38,"Payment_Method":"Net Banking","Discount_%":20,"Profit":3574.44},{"Order_ID":"ORD-1050","Order_Date":"2025-02-13","Customer_Name":"Customer_51","City":"Ahmedabad","Region":"West","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":4009.93,"Total_Sales":48119.16,"Payment_Method":"Debit Card","Discount_%":25,"Profit":7261.54},{"Order_ID":"ORD-1051","Order_Date":"2025-04-26","Customer_Name":"Customer_52","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Rahul Gupta","Units_Sold":3,"Unit_Price":4128.43,"Total_Sales":11766.03,"Payment_Method":"UPI","Discount_%":5,"Profit":3551.44},{"Order_ID":"ORD-1052","Order_Date":"2025-11-19","Customer_Name":"Customer_53","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Priya Nair","Units_Sold":16,"Unit_Price":3134.12,"Total_Sales":50145.92,"Payment_Method":"Cash","Discount_%":0,"Profit":11865.77},{"Order_ID":"ORD-1053","Order_Date":"2025-02-24","Customer_Name":"Customer_54","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Sneha Patel","Units_Sold":13,"Unit_Price":1371.13,"Total_Sales":13368.52,"Payment_Method":"Net Banking","Discount_%":25,"Profit":4094.6},{"Order_ID":"ORD-1054","Order_Date":"2025-08-26","Customer_Name":"Customer_55","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Sneha Patel","Units_Sold":2,"Unit_Price":2875.55,"Total_Sales":5751.1,"Payment_Method":"Cash","Discount_%":0,"Profit":1362.66},{"Order_ID":"ORD-1055","Order_Date":"2025-08-07","Customer_Name":"Customer_56","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":15,"Unit_Price":3140.73,"Total_Sales":35333.21,"Payment_Method":"Cash","Discount_%":25,"Profit":12988.7},{"Order_ID":"ORD-1056","Order_Date":"2025-09-24","Customer_Name":"Customer_57","City":"Ahmedabad","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Sneha Patel","Units_Sold":9,"Unit_Price":3808.53,"Total_Sales":25707.58,"Payment_Method":"Net Banking","Discount_%":25,"Profit":4709.46},{"Order_ID":"ORD-1057","Order_Date":"2025-10-04","Customer_Name":"Customer_58","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":1325.57,"Total_Sales":11930.13,"Payment_Method":"Credit Card","Discount_%":10,"Profit":2337.27},{"Order_ID":"ORD-1058","Order_Date":"2025-06-19","Customer_Name":"Customer_59","City":"Bangalore","Region":"South","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Sneha Patel","Units_Sold":5,"Unit_Price":3590.81,"Total_Sales":17954.05,"Payment_Method":"Cash","Discount_%":0,"Profit":4029.97},{"Order_ID":"ORD-1059","Order_Date":"2025-01-11","Customer_Name":"Customer_60","City":"Ahmedabad","Region":"West","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Priya Nair","Units_Sold":14,"Unit_Price":2069.49,"Total_Sales":23178.29,"Payment_Method":"Cash","Discount_%":20,"Profit":8896.26},{"Order_ID":"ORD-1060","Order_Date":"2025-10-07","Customer_Name":"Customer_61","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Rahul Gupta","Units_Sold":10,"Unit_Price":3816.68,"Total_Sales":32441.78,"Payment_Method":"Cash","Discount_%":15,"Profit":8482.43},{"Order_ID":"ORD-1061","Order_Date":"2025-12-14","Customer_Name":"Customer_62","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Rahul Gupta","Units_Sold":14,"Unit_Price":2531.08,"Total_Sales":30119.85,"Payment_Method":"Net Banking","Discount_%":15,"Profit":6049.24},{"Order_ID":"ORD-1062","Order_Date":"2025-12-06","Customer_Name":"Customer_63","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Kiran Kumar","Units_Sold":18,"Unit_Price":329.44,"Total_Sales":5040.43,"Payment_Method":"Credit Card","Discount_%":15,"Profit":1399.06},{"Order_ID":"ORD-1063","Order_Date":"2025-04-19","Customer_Name":"Customer_64","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Priya Nair","Units_Sold":15,"Unit_Price":1072.3,"Total_Sales":14476.05,"Payment_Method":"Net Banking","Discount_%":10,"Profit":3093.98},{"Order_ID":"ORD-1064","Order_Date":"2025-10-04","Customer_Name":"Customer_65","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Rahul Gupta","Units_Sold":14,"Unit_Price":1410.9,"Total_Sales":19752.6,"Payment_Method":"Credit Card","Discount_%":0,"Profit":4762.19},{"Order_ID":"ORD-1065","Order_Date":"2025-01-11","Customer_Name":"Customer_66","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Arjun Singh","Units_Sold":2,"Unit_Price":3820.32,"Total_Sales":7258.61,"Payment_Method":"Cash","Discount_%":5,"Profit":1159.99},{"Order_ID":"ORD-1066","Order_Date":"2025-05-12","Customer_Name":"Customer_67","City":"Bangalore","Region":"South","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":2907.05,"Total_Sales":11046.79,"Payment_Method":"Debit Card","Discount_%":5,"Profit":2645.82},{"Order_ID":"ORD-1067","Order_Date":"2025-02-25","Customer_Name":"Customer_68","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Divya Mehta","Units_Sold":4,"Unit_Price":3933.4,"Total_Sales":14946.92,"Payment_Method":"Cash","Discount_%":5,"Profit":5820.57},{"Order_ID":"ORD-1068","Order_Date":"2025-10-31","Customer_Name":"Customer_69","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":2103.94,"Total_Sales":20513.42,"Payment_Method":"UPI","Discount_%":25,"Profit":3271.87},{"Order_ID":"ORD-1069","Order_Date":"2025-06-27","Customer_Name":"Customer_70","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Arjun Singh","Units_Sold":20,"Unit_Price":4066.53,"Total_Sales":65064.48,"Payment_Method":"Cash","Discount_%":20,"Profit":21782.98},{"Order_ID":"ORD-1070","Order_Date":"2025-09-08","Customer_Name":"Customer_71","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Amit Shah","Units_Sold":17,"Unit_Price":3308.21,"Total_Sales":56239.57,"Payment_Method":"Credit Card","Discount_%":0,"Profit":19957.89},{"Order_ID":"ORD-1071","Order_Date":"2025-11-30","Customer_Name":"Customer_72","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Divya Mehta","Units_Sold":5,"Unit_Price":2290.34,"Total_Sales":8588.78,"Payment_Method":"Debit Card","Discount_%":25,"Profit":2203.23},{"Order_ID":"ORD-1072","Order_Date":"2025-05-06","Customer_Name":"Customer_73","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Sneha Patel","Units_Sold":14,"Unit_Price":4163.53,"Total_Sales":46631.54,"Payment_Method":"Credit Card","Discount_%":20,"Profit":8417.86},{"Order_ID":"ORD-1073","Order_Date":"2025-01-15","Customer_Name":"Customer_74","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Arjun Singh","Units_Sold":15,"Unit_Price":2935.28,"Total_Sales":33021.9,"Payment_Method":"Net Banking","Discount_%":25,"Profit":7056.67},{"Order_ID":"ORD-1074","Order_Date":"2025-11-02","Customer_Name":"Customer_75","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Priya Nair","Units_Sold":12,"Unit_Price":4029.6,"Total_Sales":43519.68,"Payment_Method":"Debit Card","Discount_%":10,"Profit":8003.16},{"Order_ID":"ORD-1075","Order_Date":"2025-05-04","Customer_Name":"Customer_76","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Priya Nair","Units_Sold":3,"Unit_Price":1358.51,"Total_Sales":3464.2,"Payment_Method":"Net Banking","Discount_%":15,"Profit":854.18},{"Order_ID":"ORD-1076","Order_Date":"2025-12-06","Customer_Name":"Customer_77","City":"Ahmedabad","Region":"West","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":1263.66,"Total_Sales":9477.45,"Payment_Method":"Cash","Discount_%":25,"Profit":1639.52},{"Order_ID":"ORD-1077","Order_Date":"2025-06-30","Customer_Name":"Customer_78","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":2242.42,"Total_Sales":20181.78,"Payment_Method":"Net Banking","Discount_%":25,"Profit":5350.52},{"Order_ID":"ORD-1078","Order_Date":"2025-10-02","Customer_Name":"Customer_79","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Priya Nair","Units_Sold":4,"Unit_Price":3662.16,"Total_Sales":13183.78,"Payment_Method":"UPI","Discount_%":10,"Profit":1791.23},{"Order_ID":"ORD-1079","Order_Date":"2025-02-21","Customer_Name":"Customer_80","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Rahul Gupta","Units_Sold":19,"Unit_Price":4887.71,"Total_Sales":74293.19,"Payment_Method":"UPI","Discount_%":20,"Profit":20730.57},{"Order_ID":"ORD-1080","Order_Date":"2025-01-24","Customer_Name":"Customer_81","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Priya Nair","Units_Sold":10,"Unit_Price":267.91,"Total_Sales":2143.28,"Payment_Method":"Credit Card","Discount_%":20,"Profit":295.72},{"Order_ID":"ORD-1081","Order_Date":"2025-08-29","Customer_Name":"Customer_82","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Divya Mehta","Units_Sold":16,"Unit_Price":692.42,"Total_Sales":11078.72,"Payment_Method":"Net Banking","Discount_%":0,"Profit":3015.84},{"Order_ID":"ORD-1082","Order_Date":"2025-02-03","Customer_Name":"Customer_83","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":4717.11,"Total_Sales":36085.89,"Payment_Method":"Net Banking","Discount_%":15,"Profit":4843.67},{"Order_ID":"ORD-1083","Order_Date":"2025-02-13","Customer_Name":"Customer_84","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Divya Mehta","Units_Sold":2,"Unit_Price":928.29,"Total_Sales":1485.26,"Payment_Method":"UPI","Discount_%":20,"Profit":571.44},{"Order_ID":"ORD-1084","Order_Date":"2025-07-14","Customer_Name":"Customer_85","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Kiran Kumar","Units_Sold":20,"Unit_Price":3995.56,"Total_Sales":75915.64,"Payment_Method":"Net Banking","Discount_%":5,"Profit":25257.75},{"Order_ID":"ORD-1085","Order_Date":"2025-02-20","Customer_Name":"Customer_86","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Sneha Patel","Units_Sold":10,"Unit_Price":2929.42,"Total_Sales":29294.2,"Payment_Method":"UPI","Discount_%":0,"Profit":8287.01},{"Order_ID":"ORD-1086","Order_Date":"2025-07-29","Customer_Name":"Customer_87","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Priya Nair","Units_Sold":8,"Unit_Price":1034.31,"Total_Sales":8274.48,"Payment_Method":"Net Banking","Discount_%":0,"Profit":1216.02},{"Order_ID":"ORD-1087","Order_Date":"2025-08-21","Customer_Name":"Customer_88","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Amit Shah","Units_Sold":8,"Unit_Price":1582.9,"Total_Sales":11396.88,"Payment_Method":"Credit Card","Discount_%":10,"Profit":3543.25},{"Order_ID":"ORD-1088","Order_Date":"2025-03-18","Customer_Name":"Customer_89","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Divya Mehta","Units_Sold":7,"Unit_Price":2240.67,"Total_Sales":12547.75,"Payment_Method":"Debit Card","Discount_%":20,"Profit":2101.03},{"Order_ID":"ORD-1089","Order_Date":"2025-08-13","Customer_Name":"Customer_90","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Priya Nair","Units_Sold":10,"Unit_Price":3056.21,"Total_Sales":24449.68,"Payment_Method":"Credit Card","Discount_%":20,"Profit":9201.83},{"Order_ID":"ORD-1090","Order_Date":"2025-08-13","Customer_Name":"Customer_91","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":4724.85,"Total_Sales":49138.44,"Payment_Method":"Credit Card","Discount_%":20,"Profit":12874.0},{"Order_ID":"ORD-1091","Order_Date":"2025-12-12","Customer_Name":"Customer_92","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Divya Mehta","Units_Sold":11,"Unit_Price":3097.83,"Total_Sales":34076.13,"Payment_Method":"Cash","Discount_%":0,"Profit":4341.23},{"Order_ID":"ORD-1092","Order_Date":"2025-11-30","Customer_Name":"Customer_93","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Kiran Kumar","Units_Sold":2,"Unit_Price":3862.92,"Total_Sales":7339.55,"Payment_Method":"Net Banking","Discount_%":5,"Profit":1769.93},{"Order_ID":"ORD-1093","Order_Date":"2025-06-20","Customer_Name":"Customer_94","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":4851.47,"Total_Sales":65979.99,"Payment_Method":"Debit Card","Discount_%":15,"Profit":13485.54},{"Order_ID":"ORD-1094","Order_Date":"2025-10-09","Customer_Name":"Customer_95","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":1583.45,"Total_Sales":21534.92,"Payment_Method":"Credit Card","Discount_%":15,"Profit":7409.52},{"Order_ID":"ORD-1095","Order_Date":"2025-01-01","Customer_Name":"Customer_96","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Rahul Gupta","Units_Sold":11,"Unit_Price":756.42,"Total_Sales":7072.53,"Payment_Method":"Cash","Discount_%":15,"Profit":2542.38},{"Order_ID":"ORD-1096","Order_Date":"2025-01-27","Customer_Name":"Customer_97","City":"Ahmedabad","Region":"West","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Priya Nair","Units_Sold":17,"Unit_Price":1936.54,"Total_Sales":27983.0,"Payment_Method":"UPI","Discount_%":15,"Profit":8048.54},{"Order_ID":"ORD-1097","Order_Date":"2025-11-19","Customer_Name":"Customer_98","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Rahul Gupta","Units_Sold":15,"Unit_Price":4428.06,"Total_Sales":56457.77,"Payment_Method":"Cash","Discount_%":15,"Profit":7702.41},{"Order_ID":"ORD-1098","Order_Date":"2025-02-28","Customer_Name":"Customer_99","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Rahul Gupta","Units_Sold":18,"Unit_Price":265.64,"Total_Sales":4064.29,"Payment_Method":"Net Banking","Discount_%":15,"Profit":520.08},{"Order_ID":"ORD-1099","Order_Date":"2025-09-05","Customer_Name":"Customer_100","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Sneha Patel","Units_Sold":10,"Unit_Price":2642.59,"Total_Sales":23783.31,"Payment_Method":"Net Banking","Discount_%":10,"Profit":5342.85},{"Order_ID":"ORD-1100","Order_Date":"2025-03-11","Customer_Name":"Customer_101","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":1114.93,"Total_Sales":11595.27,"Payment_Method":"Credit Card","Discount_%":20,"Profit":2927.48},{"Order_ID":"ORD-1101","Order_Date":"2025-06-02","Customer_Name":"Customer_102","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Arjun Singh","Units_Sold":17,"Unit_Price":1482.43,"Total_Sales":25201.31,"Payment_Method":"Cash","Discount_%":0,"Profit":4658.5},{"Order_ID":"ORD-1102","Order_Date":"2025-10-10","Customer_Name":"Customer_103","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Arjun Singh","Units_Sold":5,"Unit_Price":2343.43,"Total_Sales":9959.58,"Payment_Method":"Cash","Discount_%":15,"Profit":2027.14},{"Order_ID":"ORD-1103","Order_Date":"2025-04-30","Customer_Name":"Customer_104","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Arjun Singh","Units_Sold":7,"Unit_Price":4907.72,"Total_Sales":32636.34,"Payment_Method":"Net Banking","Discount_%":5,"Profit":8862.05},{"Order_ID":"ORD-1104","Order_Date":"2025-11-30","Customer_Name":"Customer_105","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":2053.18,"Total_Sales":20018.5,"Payment_Method":"UPI","Discount_%":25,"Profit":6760.61},{"Order_ID":"ORD-1105","Order_Date":"2025-08-14","Customer_Name":"Customer_106","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Kiran Kumar","Units_Sold":19,"Unit_Price":1793.57,"Total_Sales":34077.83,"Payment_Method":"Credit Card","Discount_%":0,"Profit":12344.94},{"Order_ID":"ORD-1106","Order_Date":"2025-02-08","Customer_Name":"Customer_107","City":"Jaipur","Region":"North","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Divya Mehta","Units_Sold":5,"Unit_Price":2167.9,"Total_Sales":8129.62,"Payment_Method":"Net Banking","Discount_%":25,"Profit":3178.58},{"Order_ID":"ORD-1107","Order_Date":"2025-10-01","Customer_Name":"Customer_108","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":3319.22,"Total_Sales":38834.87,"Payment_Method":"Net Banking","Discount_%":10,"Profit":13813.66},{"Order_ID":"ORD-1108","Order_Date":"2025-12-17","Customer_Name":"Customer_109","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Arjun Singh","Units_Sold":18,"Unit_Price":372.32,"Total_Sales":6701.76,"Payment_Method":"Debit Card","Discount_%":0,"Profit":1142.19},{"Order_ID":"ORD-1109","Order_Date":"2025-08-16","Customer_Name":"Customer_110","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":3849.77,"Total_Sales":11549.31,"Payment_Method":"UPI","Discount_%":25,"Profit":4178.24},{"Order_ID":"ORD-1110","Order_Date":"2025-05-06","Customer_Name":"Customer_111","City":"Hyderabad","Region":"South","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Rahul Gupta","Units_Sold":2,"Unit_Price":1608.17,"Total_Sales":2894.71,"Payment_Method":"Cash","Discount_%":10,"Profit":663.49},{"Order_ID":"ORD-1111","Order_Date":"2025-05-04","Customer_Name":"Customer_112","City":"Kolkata","Region":"East","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Priya Nair","Units_Sold":6,"Unit_Price":579.05,"Total_Sales":2953.15,"Payment_Method":"Net Banking","Discount_%":15,"Profit":844.34},{"Order_ID":"ORD-1112","Order_Date":"2025-08-27","Customer_Name":"Customer_113","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Sneha Patel","Units_Sold":9,"Unit_Price":2405.94,"Total_Sales":16240.09,"Payment_Method":"Debit Card","Discount_%":25,"Profit":1669.79},{"Order_ID":"ORD-1113","Order_Date":"2025-08-06","Customer_Name":"Customer_114","City":"Jaipur","Region":"North","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Sneha Patel","Units_Sold":12,"Unit_Price":4940.73,"Total_Sales":53359.88,"Payment_Method":"Debit Card","Discount_%":10,"Profit":15564.1},{"Order_ID":"ORD-1114","Order_Date":"2025-10-22","Customer_Name":"Customer_115","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":711.94,"Total_Sales":9682.38,"Payment_Method":"Debit Card","Discount_%":15,"Profit":2629.51},{"Order_ID":"ORD-1115","Order_Date":"2025-01-26","Customer_Name":"Customer_116","City":"Hyderabad","Region":"South","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Rahul Gupta","Units_Sold":1,"Unit_Price":2916.46,"Total_Sales":2187.35,"Payment_Method":"Cash","Discount_%":25,"Profit":729.47},{"Order_ID":"ORD-1116","Order_Date":"2025-12-14","Customer_Name":"Customer_117","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":1251.22,"Total_Sales":14263.91,"Payment_Method":"UPI","Discount_%":5,"Profit":4083.29},{"Order_ID":"ORD-1117","Order_Date":"2025-02-16","Customer_Name":"Customer_118","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Rahul Gupta","Units_Sold":15,"Unit_Price":360.15,"Total_Sales":4862.03,"Payment_Method":"Debit Card","Discount_%":10,"Profit":1554.43},{"Order_ID":"ORD-1118","Order_Date":"2025-07-07","Customer_Name":"Customer_119","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Priya Nair","Units_Sold":7,"Unit_Price":834.37,"Total_Sales":4672.47,"Payment_Method":"Cash","Discount_%":20,"Profit":1695.82},{"Order_ID":"ORD-1119","Order_Date":"2025-06-23","Customer_Name":"Customer_120","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Rahul Gupta","Units_Sold":16,"Unit_Price":4843.44,"Total_Sales":69745.54,"Payment_Method":"Credit Card","Discount_%":10,"Profit":22595.31},{"Order_ID":"ORD-1120","Order_Date":"2025-07-23","Customer_Name":"Customer_121","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Arjun Singh","Units_Sold":8,"Unit_Price":4328.67,"Total_Sales":25972.02,"Payment_Method":"Cash","Discount_%":25,"Profit":7851.91},{"Order_ID":"ORD-1121","Order_Date":"2025-12-11","Customer_Name":"Customer_122","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":2775.55,"Total_Sales":21232.96,"Payment_Method":"Debit Card","Discount_%":15,"Profit":4471.15},{"Order_ID":"ORD-1122","Order_Date":"2025-10-15","Customer_Name":"Customer_123","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Amit Shah","Units_Sold":8,"Unit_Price":2463.09,"Total_Sales":15763.78,"Payment_Method":"Debit Card","Discount_%":20,"Profit":5758.04},{"Order_ID":"ORD-1123","Order_Date":"2025-03-01","Customer_Name":"Customer_124","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Divya Mehta","Units_Sold":15,"Unit_Price":4565.06,"Total_Sales":61628.31,"Payment_Method":"UPI","Discount_%":10,"Profit":18166.29},{"Order_ID":"ORD-1124","Order_Date":"2025-08-21","Customer_Name":"Customer_125","City":"Mumbai","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":666.52,"Total_Sales":2132.86,"Payment_Method":"Debit Card","Discount_%":20,"Profit":300.09},{"Order_ID":"ORD-1125","Order_Date":"2025-09-08","Customer_Name":"Customer_126","City":"Jaipur","Region":"North","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Divya Mehta","Units_Sold":5,"Unit_Price":4449.99,"Total_Sales":16687.46,"Payment_Method":"Cash","Discount_%":25,"Profit":2164.47},{"Order_ID":"ORD-1126","Order_Date":"2025-07-05","Customer_Name":"Customer_127","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Divya Mehta","Units_Sold":12,"Unit_Price":1242.89,"Total_Sales":12677.48,"Payment_Method":"Credit Card","Discount_%":15,"Profit":4882.94},{"Order_ID":"ORD-1127","Order_Date":"2025-08-21","Customer_Name":"Customer_128","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Amit Shah","Units_Sold":13,"Unit_Price":1524.23,"Total_Sales":19814.99,"Payment_Method":"Credit Card","Discount_%":0,"Profit":7622.89},{"Order_ID":"ORD-1128","Order_Date":"2025-10-17","Customer_Name":"Customer_129","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Amit Shah","Units_Sold":2,"Unit_Price":3976.61,"Total_Sales":7555.56,"Payment_Method":"UPI","Discount_%":5,"Profit":2996.88},{"Order_ID":"ORD-1129","Order_Date":"2025-03-17","Customer_Name":"Customer_130","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Kiran Kumar","Units_Sold":7,"Unit_Price":4102.65,"Total_Sales":27282.62,"Payment_Method":"Cash","Discount_%":5,"Profit":5417.45},{"Order_ID":"ORD-1130","Order_Date":"2025-01-14","Customer_Name":"Customer_131","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Priya Nair","Units_Sold":18,"Unit_Price":1403.14,"Total_Sales":23993.69,"Payment_Method":"UPI","Discount_%":5,"Profit":3190.63},{"Order_ID":"ORD-1131","Order_Date":"2025-08-04","Customer_Name":"Customer_132","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Kiran Kumar","Units_Sold":11,"Unit_Price":275.75,"Total_Sales":2729.93,"Payment_Method":"Cash","Discount_%":10,"Profit":315.91},{"Order_ID":"ORD-1132","Order_Date":"2025-08-20","Customer_Name":"Customer_133","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Sneha Patel","Units_Sold":15,"Unit_Price":3934.48,"Total_Sales":47213.76,"Payment_Method":"Cash","Discount_%":20,"Profit":13130.14},{"Order_ID":"ORD-1133","Order_Date":"2025-02-01","Customer_Name":"Customer_134","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Divya Mehta","Units_Sold":17,"Unit_Price":1647.83,"Total_Sales":21009.83,"Payment_Method":"Net Banking","Discount_%":25,"Profit":8177.19},{"Order_ID":"ORD-1134","Order_Date":"2025-03-17","Customer_Name":"Customer_135","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Sneha Patel","Units_Sold":15,"Unit_Price":552.76,"Total_Sales":8291.4,"Payment_Method":"Credit Card","Discount_%":0,"Profit":1630.37},{"Order_ID":"ORD-1135","Order_Date":"2025-11-02","Customer_Name":"Customer_136","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Divya Mehta","Units_Sold":19,"Unit_Price":2832.11,"Total_Sales":48429.08,"Payment_Method":"Cash","Discount_%":10,"Profit":10376.96},{"Order_ID":"ORD-1136","Order_Date":"2025-12-02","Customer_Name":"Customer_137","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":14,"Unit_Price":676.06,"Total_Sales":7098.63,"Payment_Method":"Cash","Discount_%":25,"Profit":953.52},{"Order_ID":"ORD-1137","Order_Date":"2025-02-18","Customer_Name":"Customer_138","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Priya Nair","Units_Sold":14,"Unit_Price":1826.87,"Total_Sales":21739.75,"Payment_Method":"Debit Card","Discount_%":15,"Profit":4774.46},{"Order_ID":"ORD-1138","Order_Date":"2025-02-13","Customer_Name":"Customer_139","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Rahul Gupta","Units_Sold":5,"Unit_Price":3496.74,"Total_Sales":14861.14,"Payment_Method":"Credit Card","Discount_%":15,"Profit":1785.42},{"Order_ID":"ORD-1139","Order_Date":"2025-10-15","Customer_Name":"Customer_140","City":"Kolkata","Region":"East","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Arjun Singh","Units_Sold":5,"Unit_Price":2870.58,"Total_Sales":11482.32,"Payment_Method":"Debit Card","Discount_%":20,"Profit":4443.51},{"Order_ID":"ORD-1140","Order_Date":"2025-05-28","Customer_Name":"Customer_141","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":4366.84,"Total_Sales":45851.82,"Payment_Method":"Cash","Discount_%":25,"Profit":5292.85},{"Order_ID":"ORD-1141","Order_Date":"2025-02-25","Customer_Name":"Customer_142","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":1221.15,"Total_Sales":15569.66,"Payment_Method":"Debit Card","Discount_%":25,"Profit":3809.22},{"Order_ID":"ORD-1142","Order_Date":"2025-11-15","Customer_Name":"Customer_143","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Arjun Singh","Units_Sold":9,"Unit_Price":2955.68,"Total_Sales":22610.95,"Payment_Method":"Cash","Discount_%":15,"Profit":7994.02},{"Order_ID":"ORD-1143","Order_Date":"2025-06-08","Customer_Name":"Customer_144","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Divya Mehta","Units_Sold":9,"Unit_Price":338.98,"Total_Sales":2745.74,"Payment_Method":"Debit Card","Discount_%":10,"Profit":853.4},{"Order_ID":"ORD-1144","Order_Date":"2025-11-21","Customer_Name":"Customer_145","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Arjun Singh","Units_Sold":5,"Unit_Price":2918.34,"Total_Sales":12402.94,"Payment_Method":"Credit Card","Discount_%":15,"Profit":1499.21},{"Order_ID":"ORD-1145","Order_Date":"2025-06-09","Customer_Name":"Customer_146","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":2215.2,"Total_Sales":25917.84,"Payment_Method":"Debit Card","Discount_%":10,"Profit":3815.7},{"Order_ID":"ORD-1146","Order_Date":"2025-02-11","Customer_Name":"Customer_147","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Amit Shah","Units_Sold":5,"Unit_Price":955.57,"Total_Sales":3822.28,"Payment_Method":"Debit Card","Discount_%":20,"Profit":439.29},{"Order_ID":"ORD-1147","Order_Date":"2025-09-20","Customer_Name":"Customer_148","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Sneha Patel","Units_Sold":20,"Unit_Price":2321.81,"Total_Sales":41792.58,"Payment_Method":"Credit Card","Discount_%":10,"Profit":6882.01},{"Order_ID":"ORD-1148","Order_Date":"2025-04-23","Customer_Name":"Customer_149","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Rahul Gupta","Units_Sold":19,"Unit_Price":2535.84,"Total_Sales":36135.72,"Payment_Method":"Net Banking","Discount_%":25,"Profit":6957.06},{"Order_ID":"ORD-1149","Order_Date":"2025-05-29","Customer_Name":"Customer_150","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Priya Nair","Units_Sold":10,"Unit_Price":4737.56,"Total_Sales":45006.82,"Payment_Method":"Debit Card","Discount_%":5,"Profit":14818.42},{"Order_ID":"ORD-1150","Order_Date":"2025-04-28","Customer_Name":"Customer_151","City":"Delhi","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Divya Mehta","Units_Sold":14,"Unit_Price":1043.34,"Total_Sales":12415.75,"Payment_Method":"Cash","Discount_%":15,"Profit":3225.3},{"Order_ID":"ORD-1151","Order_Date":"2025-08-24","Customer_Name":"Customer_152","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Amit Shah","Units_Sold":13,"Unit_Price":4336.47,"Total_Sales":56374.11,"Payment_Method":"Credit Card","Discount_%":0,"Profit":13014.86},{"Order_ID":"ORD-1152","Order_Date":"2025-07-27","Customer_Name":"Customer_153","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Kiran Kumar","Units_Sold":13,"Unit_Price":3605.6,"Total_Sales":39841.88,"Payment_Method":"Credit Card","Discount_%":15,"Profit":7444.64},{"Order_ID":"ORD-1153","Order_Date":"2025-10-29","Customer_Name":"Customer_154","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Sneha Patel","Units_Sold":12,"Unit_Price":623.02,"Total_Sales":7476.24,"Payment_Method":"Net Banking","Discount_%":0,"Profit":1293.35},{"Order_ID":"ORD-1154","Order_Date":"2025-03-28","Customer_Name":"Customer_155","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":3779.86,"Total_Sales":35908.67,"Payment_Method":"Credit Card","Discount_%":5,"Profit":7178.88},{"Order_ID":"ORD-1155","Order_Date":"2025-11-27","Customer_Name":"Customer_156","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":1130.74,"Total_Sales":17300.32,"Payment_Method":"UPI","Discount_%":10,"Profit":3552.27},{"Order_ID":"ORD-1156","Order_Date":"2025-12-02","Customer_Name":"Customer_157","City":"Chennai","Region":"South","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Rahul Gupta","Units_Sold":7,"Unit_Price":1032.8,"Total_Sales":6868.12,"Payment_Method":"Credit Card","Discount_%":5,"Profit":2253.19},{"Order_ID":"ORD-1157","Order_Date":"2025-10-17","Customer_Name":"Customer_158","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Sneha Patel","Units_Sold":19,"Unit_Price":3847.41,"Total_Sales":62135.67,"Payment_Method":"Cash","Discount_%":15,"Profit":18910.37},{"Order_ID":"ORD-1158","Order_Date":"2025-05-21","Customer_Name":"Customer_159","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Priya Nair","Units_Sold":15,"Unit_Price":527.77,"Total_Sales":6729.07,"Payment_Method":"Cash","Discount_%":15,"Profit":1947.5},{"Order_ID":"ORD-1159","Order_Date":"2025-05-27","Customer_Name":"Customer_160","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":2416.36,"Total_Sales":24163.6,"Payment_Method":"Credit Card","Discount_%":0,"Profit":2828.76},{"Order_ID":"ORD-1160","Order_Date":"2025-01-22","Customer_Name":"Customer_161","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Kiran Kumar","Units_Sold":13,"Unit_Price":2421.02,"Total_Sales":25178.61,"Payment_Method":"Net Banking","Discount_%":20,"Profit":9725.73},{"Order_ID":"ORD-1161","Order_Date":"2025-08-19","Customer_Name":"Customer_162","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Rahul Gupta","Units_Sold":20,"Unit_Price":2483.02,"Total_Sales":47177.38,"Payment_Method":"Credit Card","Discount_%":5,"Profit":18272.59},{"Order_ID":"ORD-1162","Order_Date":"2025-08-13","Customer_Name":"Customer_163","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Kiran Kumar","Units_Sold":6,"Unit_Price":387.88,"Total_Sales":1745.46,"Payment_Method":"Cash","Discount_%":25,"Profit":403.77},{"Order_ID":"ORD-1163","Order_Date":"2025-06-23","Customer_Name":"Customer_164","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Rahul Gupta","Units_Sold":12,"Unit_Price":4606.1,"Total_Sales":46982.22,"Payment_Method":"Cash","Discount_%":15,"Profit":10459.69},{"Order_ID":"ORD-1164","Order_Date":"2025-05-10","Customer_Name":"Customer_165","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Amit Shah","Units_Sold":11,"Unit_Price":653.63,"Total_Sales":5392.45,"Payment_Method":"Cash","Discount_%":25,"Profit":1164.6},{"Order_ID":"ORD-1165","Order_Date":"2025-12-24","Customer_Name":"Customer_166","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Kiran Kumar","Units_Sold":5,"Unit_Price":4600.38,"Total_Sales":20701.71,"Payment_Method":"Net Banking","Discount_%":10,"Profit":8080.06},{"Order_ID":"ORD-1166","Order_Date":"2025-12-10","Customer_Name":"Customer_167","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Rahul Gupta","Units_Sold":18,"Unit_Price":2008.06,"Total_Sales":32530.57,"Payment_Method":"Cash","Discount_%":10,"Profit":11189.07},{"Order_ID":"ORD-1167","Order_Date":"2025-04-20","Customer_Name":"Customer_168","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":287.51,"Total_Sales":3105.11,"Payment_Method":"Debit Card","Discount_%":10,"Profit":478.43},{"Order_ID":"ORD-1168","Order_Date":"2025-10-04","Customer_Name":"Customer_169","City":"Ahmedabad","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Priya Nair","Units_Sold":5,"Unit_Price":570.39,"Total_Sales":2851.95,"Payment_Method":"Cash","Discount_%":0,"Profit":719.57},{"Order_ID":"ORD-1169","Order_Date":"2025-04-03","Customer_Name":"Customer_170","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Arjun Singh","Units_Sold":20,"Unit_Price":829.04,"Total_Sales":14093.68,"Payment_Method":"Cash","Discount_%":15,"Profit":2061.56},{"Order_ID":"ORD-1170","Order_Date":"2025-08-16","Customer_Name":"Customer_171","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Amit Shah","Units_Sold":14,"Unit_Price":1948.64,"Total_Sales":20460.72,"Payment_Method":"Cash","Discount_%":25,"Profit":3504.08},{"Order_ID":"ORD-1171","Order_Date":"2025-04-10","Customer_Name":"Customer_172","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Priya Nair","Units_Sold":18,"Unit_Price":1348.01,"Total_Sales":20624.55,"Payment_Method":"Debit Card","Discount_%":15,"Profit":7655.67},{"Order_ID":"ORD-1172","Order_Date":"2025-03-24","Customer_Name":"Customer_173","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":3935.0,"Total_Sales":31480.0,"Payment_Method":"UPI","Discount_%":20,"Profit":8129.33},{"Order_ID":"ORD-1173","Order_Date":"2025-12-31","Customer_Name":"Customer_174","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Amit Shah","Units_Sold":16,"Unit_Price":4395.76,"Total_Sales":56265.73,"Payment_Method":"Cash","Discount_%":20,"Profit":21397.19},{"Order_ID":"ORD-1174","Order_Date":"2025-08-12","Customer_Name":"Customer_175","City":"Delhi","Region":"North","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Arjun Singh","Units_Sold":6,"Unit_Price":1509.4,"Total_Sales":7245.12,"Payment_Method":"Credit Card","Discount_%":20,"Profit":1044.78},{"Order_ID":"ORD-1175","Order_Date":"2025-07-17","Customer_Name":"Customer_176","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Amit Shah","Units_Sold":14,"Unit_Price":455.63,"Total_Sales":5103.06,"Payment_Method":"Credit Card","Discount_%":20,"Profit":1082.81},{"Order_ID":"ORD-1176","Order_Date":"2025-03-16","Customer_Name":"Customer_177","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Rahul Gupta","Units_Sold":4,"Unit_Price":4228.05,"Total_Sales":12684.15,"Payment_Method":"UPI","Discount_%":25,"Profit":2544.28},{"Order_ID":"ORD-1177","Order_Date":"2025-01-03","Customer_Name":"Customer_178","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Divya Mehta","Units_Sold":5,"Unit_Price":3842.44,"Total_Sales":16330.37,"Payment_Method":"Credit Card","Discount_%":15,"Profit":3830.79},{"Order_ID":"ORD-1178","Order_Date":"2025-08-05","Customer_Name":"Customer_179","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Arjun Singh","Units_Sold":5,"Unit_Price":2834.26,"Total_Sales":10628.48,"Payment_Method":"Credit Card","Discount_%":25,"Profit":3004.29},{"Order_ID":"ORD-1179","Order_Date":"2025-08-23","Customer_Name":"Customer_180","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Amit Shah","Units_Sold":2,"Unit_Price":1344.51,"Total_Sales":2016.76,"Payment_Method":"Credit Card","Discount_%":25,"Profit":682.01},{"Order_ID":"ORD-1180","Order_Date":"2025-03-15","Customer_Name":"Customer_181","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":1,"Unit_Price":3233.38,"Total_Sales":2586.7,"Payment_Method":"Debit Card","Discount_%":20,"Profit":446.42},{"Order_ID":"ORD-1181","Order_Date":"2025-02-13","Customer_Name":"Customer_182","City":"Kolkata","Region":"East","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Rahul Gupta","Units_Sold":8,"Unit_Price":2939.19,"Total_Sales":22337.84,"Payment_Method":"Cash","Discount_%":5,"Profit":6685.97},{"Order_ID":"ORD-1182","Order_Date":"2025-07-19","Customer_Name":"Customer_183","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":3974.78,"Total_Sales":54057.01,"Payment_Method":"Net Banking","Discount_%":20,"Profit":14392.44},{"Order_ID":"ORD-1183","Order_Date":"2025-06-26","Customer_Name":"Customer_184","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Rahul Gupta","Units_Sold":9,"Unit_Price":3787.12,"Total_Sales":30675.67,"Payment_Method":"UPI","Discount_%":10,"Profit":10324.08},{"Order_ID":"ORD-1184","Order_Date":"2025-03-31","Customer_Name":"Customer_185","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Priya Nair","Units_Sold":2,"Unit_Price":1891.04,"Total_Sales":3403.87,"Payment_Method":"Net Banking","Discount_%":10,"Profit":1171.11},{"Order_ID":"ORD-1185","Order_Date":"2025-04-14","Customer_Name":"Customer_186","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Arjun Singh","Units_Sold":5,"Unit_Price":502.88,"Total_Sales":2137.24,"Payment_Method":"Credit Card","Discount_%":15,"Profit":237.44},{"Order_ID":"ORD-1186","Order_Date":"2025-01-19","Customer_Name":"Customer_187","City":"Chennai","Region":"South","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Rahul Gupta","Units_Sold":17,"Unit_Price":2111.48,"Total_Sales":28716.13,"Payment_Method":"UPI","Discount_%":20,"Profit":6949.88},{"Order_ID":"ORD-1187","Order_Date":"2025-07-24","Customer_Name":"Customer_188","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Arjun Singh","Units_Sold":11,"Unit_Price":1511.44,"Total_Sales":14963.26,"Payment_Method":"Net Banking","Discount_%":10,"Profit":3457.79},{"Order_ID":"ORD-1188","Order_Date":"2025-02-12","Customer_Name":"Customer_189","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":1963.27,"Total_Sales":25129.86,"Payment_Method":"Net Banking","Discount_%":20,"Profit":4523.78},{"Order_ID":"ORD-1189","Order_Date":"2025-06-17","Customer_Name":"Customer_190","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Arjun Singh","Units_Sold":6,"Unit_Price":2818.28,"Total_Sales":15218.71,"Payment_Method":"Debit Card","Discount_%":10,"Profit":1990.29},{"Order_ID":"ORD-1190","Order_Date":"2025-01-22","Customer_Name":"Customer_191","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Divya Mehta","Units_Sold":14,"Unit_Price":999.89,"Total_Sales":11898.69,"Payment_Method":"Debit Card","Discount_%":15,"Profit":2444.75},{"Order_ID":"ORD-1191","Order_Date":"2025-09-20","Customer_Name":"Customer_192","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Divya Mehta","Units_Sold":2,"Unit_Price":560.2,"Total_Sales":840.3,"Payment_Method":"UPI","Discount_%":25,"Profit":186.43},{"Order_ID":"ORD-1192","Order_Date":"2025-11-27","Customer_Name":"Customer_193","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Divya Mehta","Units_Sold":15,"Unit_Price":367.04,"Total_Sales":5505.6,"Payment_Method":"Debit Card","Discount_%":0,"Profit":940.35},{"Order_ID":"ORD-1193","Order_Date":"2025-07-10","Customer_Name":"Customer_194","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Amit Shah","Units_Sold":20,"Unit_Price":936.5,"Total_Sales":15920.5,"Payment_Method":"Net Banking","Discount_%":15,"Profit":6123.77},{"Order_ID":"ORD-1194","Order_Date":"2025-02-28","Customer_Name":"Customer_195","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":2110.56,"Total_Sales":18995.04,"Payment_Method":"Credit Card","Discount_%":25,"Profit":3487.62},{"Order_ID":"ORD-1195","Order_Date":"2025-04-20","Customer_Name":"Customer_196","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Sneha Patel","Units_Sold":18,"Unit_Price":765.25,"Total_Sales":12397.05,"Payment_Method":"Cash","Discount_%":10,"Profit":3858.1},{"Order_ID":"ORD-1196","Order_Date":"2025-08-16","Customer_Name":"Customer_197","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Priya Nair","Units_Sold":4,"Unit_Price":851.5,"Total_Sales":3406.0,"Payment_Method":"Credit Card","Discount_%":0,"Profit":802.5},{"Order_ID":"ORD-1197","Order_Date":"2025-03-22","Customer_Name":"Customer_198","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Divya Mehta","Units_Sold":3,"Unit_Price":2839.99,"Total_Sales":7667.97,"Payment_Method":"UPI","Discount_%":10,"Profit":2817.21},{"Order_ID":"ORD-1198","Order_Date":"2025-01-14","Customer_Name":"Customer_199","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Amit Shah","Units_Sold":7,"Unit_Price":4001.92,"Total_Sales":26612.77,"Payment_Method":"Debit Card","Discount_%":5,"Profit":8971.48},{"Order_ID":"ORD-1199","Order_Date":"2025-07-23","Customer_Name":"Customer_200","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Sneha Patel","Units_Sold":18,"Unit_Price":822.9,"Total_Sales":14812.2,"Payment_Method":"Net Banking","Discount_%":0,"Profit":1773.38},{"Order_ID":"ORD-1200","Order_Date":"2025-08-19","Customer_Name":"Customer_201","City":"Jaipur","Region":"North","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Arjun Singh","Units_Sold":19,"Unit_Price":554.0,"Total_Sales":9473.4,"Payment_Method":"Net Banking","Discount_%":10,"Profit":2772.88},{"Order_ID":"ORD-1201","Order_Date":"2025-03-08","Customer_Name":"Customer_202","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Arjun Singh","Units_Sold":18,"Unit_Price":3271.01,"Total_Sales":55934.27,"Payment_Method":"Net Banking","Discount_%":5,"Profit":18477.02},{"Order_ID":"ORD-1202","Order_Date":"2025-12-30","Customer_Name":"Customer_203","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Kiran Kumar","Units_Sold":5,"Unit_Price":1659.8,"Total_Sales":7884.05,"Payment_Method":"UPI","Discount_%":5,"Profit":1551.57},{"Order_ID":"ORD-1203","Order_Date":"2025-05-21","Customer_Name":"Customer_204","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":3,"Unit_Price":1402.91,"Total_Sales":3156.55,"Payment_Method":"UPI","Discount_%":25,"Profit":1221.29},{"Order_ID":"ORD-1204","Order_Date":"2025-03-20","Customer_Name":"Customer_205","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":17,"Unit_Price":3276.74,"Total_Sales":44563.66,"Payment_Method":"UPI","Discount_%":20,"Profit":17044.8},{"Order_ID":"ORD-1205","Order_Date":"2025-11-25","Customer_Name":"Customer_206","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Rahul Gupta","Units_Sold":19,"Unit_Price":397.73,"Total_Sales":7556.87,"Payment_Method":"Cash","Discount_%":0,"Profit":939.82},{"Order_ID":"ORD-1206","Order_Date":"2025-11-18","Customer_Name":"Customer_207","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Arjun Singh","Units_Sold":19,"Unit_Price":2199.62,"Total_Sales":31344.58,"Payment_Method":"Cash","Discount_%":25,"Profit":3419.25},{"Order_ID":"ORD-1207","Order_Date":"2025-08-21","Customer_Name":"Customer_208","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Sneha Patel","Units_Sold":8,"Unit_Price":4062.5,"Total_Sales":24375.0,"Payment_Method":"Credit Card","Discount_%":25,"Profit":5407.05},{"Order_ID":"ORD-1208","Order_Date":"2025-06-10","Customer_Name":"Customer_209","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":2429.32,"Total_Sales":34982.21,"Payment_Method":"Debit Card","Discount_%":10,"Profit":9864.92},{"Order_ID":"ORD-1209","Order_Date":"2025-08-27","Customer_Name":"Customer_210","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Arjun Singh","Units_Sold":12,"Unit_Price":2671.9,"Total_Sales":32062.8,"Payment_Method":"Credit Card","Discount_%":0,"Profit":6275.8},{"Order_ID":"ORD-1210","Order_Date":"2025-08-03","Customer_Name":"Customer_211","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Priya Nair","Units_Sold":4,"Unit_Price":442.91,"Total_Sales":1505.89,"Payment_Method":"UPI","Discount_%":15,"Profit":540.99},{"Order_ID":"ORD-1211","Order_Date":"2025-09-21","Customer_Name":"Customer_212","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Divya Mehta","Units_Sold":11,"Unit_Price":1111.2,"Total_Sales":11612.04,"Payment_Method":"Net Banking","Discount_%":5,"Profit":2896.97},{"Order_ID":"ORD-1212","Order_Date":"2025-05-04","Customer_Name":"Customer_213","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Amit Shah","Units_Sold":3,"Unit_Price":4737.12,"Total_Sales":11369.09,"Payment_Method":"UPI","Discount_%":20,"Profit":2696.4},{"Order_ID":"ORD-1213","Order_Date":"2025-05-27","Customer_Name":"Customer_214","City":"Lucknow","Region":"North","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":2575.49,"Total_Sales":19316.17,"Payment_Method":"Cash","Discount_%":25,"Profit":5828.77},{"Order_ID":"ORD-1214","Order_Date":"2025-07-25","Customer_Name":"Customer_215","City":"Mumbai","Region":"West","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Priya Nair","Units_Sold":9,"Unit_Price":3692.04,"Total_Sales":28244.11,"Payment_Method":"Credit Card","Discount_%":15,"Profit":5925.08},{"Order_ID":"ORD-1215","Order_Date":"2025-10-09","Customer_Name":"Customer_216","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Rahul Gupta","Units_Sold":18,"Unit_Price":1585.29,"Total_Sales":24254.94,"Payment_Method":"Debit Card","Discount_%":15,"Profit":6094.7},{"Order_ID":"ORD-1216","Order_Date":"2025-06-23","Customer_Name":"Customer_217","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Amit Shah","Units_Sold":5,"Unit_Price":4880.4,"Total_Sales":20741.7,"Payment_Method":"Cash","Discount_%":15,"Profit":4396.4},{"Order_ID":"ORD-1217","Order_Date":"2025-03-12","Customer_Name":"Customer_218","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":2126.66,"Total_Sales":36153.22,"Payment_Method":"Debit Card","Discount_%":0,"Profit":4106.68},{"Order_ID":"ORD-1218","Order_Date":"2025-11-10","Customer_Name":"Customer_219","City":"Ahmedabad","Region":"West","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Priya Nair","Units_Sold":20,"Unit_Price":4487.03,"Total_Sales":85253.57,"Payment_Method":"Debit Card","Discount_%":5,"Profit":16913.43},{"Order_ID":"ORD-1219","Order_Date":"2025-09-30","Customer_Name":"Customer_220","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Divya Mehta","Units_Sold":10,"Unit_Price":3049.88,"Total_Sales":24399.04,"Payment_Method":"Net Banking","Discount_%":20,"Profit":8502.74},{"Order_ID":"ORD-1220","Order_Date":"2025-08-02","Customer_Name":"Customer_221","City":"Lucknow","Region":"North","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Arjun Singh","Units_Sold":1,"Unit_Price":1968.12,"Total_Sales":1476.09,"Payment_Method":"Cash","Discount_%":25,"Profit":196.14},{"Order_ID":"ORD-1221","Order_Date":"2025-10-24","Customer_Name":"Customer_222","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":1474.55,"Total_Sales":17694.6,"Payment_Method":"Cash","Discount_%":25,"Profit":5925.41},{"Order_ID":"ORD-1222","Order_Date":"2025-07-14","Customer_Name":"Customer_223","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":1018.46,"Total_Sales":12221.52,"Payment_Method":"UPI","Discount_%":25,"Profit":3866.34},{"Order_ID":"ORD-1223","Order_Date":"2025-03-19","Customer_Name":"Customer_224","City":"Chennai","Region":"South","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Divya Mehta","Units_Sold":4,"Unit_Price":1115.76,"Total_Sales":3793.58,"Payment_Method":"Net Banking","Discount_%":15,"Profit":736.36},{"Order_ID":"ORD-1224","Order_Date":"2025-12-28","Customer_Name":"Customer_225","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Arjun Singh","Units_Sold":20,"Unit_Price":4618.5,"Total_Sales":69277.5,"Payment_Method":"UPI","Discount_%":25,"Profit":22045.53},{"Order_ID":"ORD-1225","Order_Date":"2025-08-24","Customer_Name":"Customer_226","City":"Jaipur","Region":"North","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Rahul Gupta","Units_Sold":16,"Unit_Price":2722.29,"Total_Sales":39200.98,"Payment_Method":"Cash","Discount_%":10,"Profit":15171.0},{"Order_ID":"ORD-1226","Order_Date":"2025-05-23","Customer_Name":"Customer_227","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Divya Mehta","Units_Sold":9,"Unit_Price":3128.37,"Total_Sales":26747.56,"Payment_Method":"Cash","Discount_%":5,"Profit":10356.69},{"Order_ID":"ORD-1227","Order_Date":"2025-06-12","Customer_Name":"Customer_228","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":3583.52,"Total_Sales":26876.4,"Payment_Method":"Net Banking","Discount_%":25,"Profit":8371.9},{"Order_ID":"ORD-1228","Order_Date":"2025-07-22","Customer_Name":"Customer_229","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Rahul Gupta","Units_Sold":4,"Unit_Price":2952.69,"Total_Sales":9448.61,"Payment_Method":"Debit Card","Discount_%":20,"Profit":2021.14},{"Order_ID":"ORD-1229","Order_Date":"2025-09-03","Customer_Name":"Customer_230","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Rahul Gupta","Units_Sold":3,"Unit_Price":1862.54,"Total_Sales":4749.48,"Payment_Method":"UPI","Discount_%":15,"Profit":1409.61},{"Order_ID":"ORD-1230","Order_Date":"2025-05-03","Customer_Name":"Customer_231","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Kiran Kumar","Units_Sold":9,"Unit_Price":858.91,"Total_Sales":6184.15,"Payment_Method":"UPI","Discount_%":20,"Profit":1992.95},{"Order_ID":"ORD-1231","Order_Date":"2025-08-30","Customer_Name":"Customer_232","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Priya Nair","Units_Sold":8,"Unit_Price":451.96,"Total_Sales":3073.33,"Payment_Method":"Credit Card","Discount_%":15,"Profit":611.86},{"Order_ID":"ORD-1232","Order_Date":"2025-04-13","Customer_Name":"Customer_233","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Priya Nair","Units_Sold":14,"Unit_Price":3333.89,"Total_Sales":39673.29,"Payment_Method":"Debit Card","Discount_%":15,"Profit":9649.92},{"Order_ID":"ORD-1233","Order_Date":"2025-01-20","Customer_Name":"Customer_234","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Arjun Singh","Units_Sold":3,"Unit_Price":3331.03,"Total_Sales":9493.44,"Payment_Method":"UPI","Discount_%":5,"Profit":2473.47},{"Order_ID":"ORD-1234","Order_Date":"2025-05-29","Customer_Name":"Customer_235","City":"Kolkata","Region":"East","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Arjun Singh","Units_Sold":13,"Unit_Price":3982.21,"Total_Sales":49180.29,"Payment_Method":"Credit Card","Discount_%":5,"Profit":18736.84},{"Order_ID":"ORD-1235","Order_Date":"2025-11-25","Customer_Name":"Customer_236","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Kiran Kumar","Units_Sold":4,"Unit_Price":4656.58,"Total_Sales":16763.69,"Payment_Method":"Cash","Discount_%":10,"Profit":3107.46},{"Order_ID":"ORD-1236","Order_Date":"2025-06-19","Customer_Name":"Customer_237","City":"Jaipur","Region":"North","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Arjun Singh","Units_Sold":17,"Unit_Price":2446.5,"Total_Sales":39510.97,"Payment_Method":"UPI","Discount_%":5,"Profit":13538.2},{"Order_ID":"ORD-1237","Order_Date":"2025-10-18","Customer_Name":"Customer_238","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Divya Mehta","Units_Sold":6,"Unit_Price":267.6,"Total_Sales":1445.04,"Payment_Method":"UPI","Discount_%":10,"Profit":487.31},{"Order_ID":"ORD-1238","Order_Date":"2025-02-18","Customer_Name":"Customer_239","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":2673.35,"Total_Sales":37426.9,"Payment_Method":"UPI","Discount_%":0,"Profit":8243.27},{"Order_ID":"ORD-1239","Order_Date":"2025-05-17","Customer_Name":"Customer_240","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Priya Nair","Units_Sold":1,"Unit_Price":1451.77,"Total_Sales":1379.18,"Payment_Method":"Debit Card","Discount_%":5,"Profit":322.76},{"Order_ID":"ORD-1240","Order_Date":"2025-12-08","Customer_Name":"Customer_241","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":3337.68,"Total_Sales":22529.34,"Payment_Method":"Credit Card","Discount_%":25,"Profit":3850.06},{"Order_ID":"ORD-1241","Order_Date":"2025-12-20","Customer_Name":"Customer_242","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Sneha Patel","Units_Sold":17,"Unit_Price":4630.91,"Total_Sales":59044.1,"Payment_Method":"Credit Card","Discount_%":25,"Profit":19540.78},{"Order_ID":"ORD-1242","Order_Date":"2025-11-07","Customer_Name":"Customer_243","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Priya Nair","Units_Sold":8,"Unit_Price":4795.33,"Total_Sales":32608.24,"Payment_Method":"Debit Card","Discount_%":15,"Profit":4759.36},{"Order_ID":"ORD-1243","Order_Date":"2025-12-15","Customer_Name":"Customer_244","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Sneha Patel","Units_Sold":18,"Unit_Price":4049.58,"Total_Sales":69247.82,"Payment_Method":"Cash","Discount_%":5,"Profit":22751.92},{"Order_ID":"ORD-1244","Order_Date":"2025-10-08","Customer_Name":"Customer_245","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":574.89,"Total_Sales":5518.94,"Payment_Method":"Cash","Discount_%":20,"Profit":737.68},{"Order_ID":"ORD-1245","Order_Date":"2025-12-15","Customer_Name":"Customer_246","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Priya Nair","Units_Sold":6,"Unit_Price":1774.96,"Total_Sales":8519.81,"Payment_Method":"UPI","Discount_%":20,"Profit":1981.3},{"Order_ID":"ORD-1246","Order_Date":"2025-08-01","Customer_Name":"Customer_247","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Kiran Kumar","Units_Sold":15,"Unit_Price":4081.72,"Total_Sales":52041.93,"Payment_Method":"Net Banking","Discount_%":15,"Profit":7264.18},{"Order_ID":"ORD-1247","Order_Date":"2025-01-02","Customer_Name":"Customer_248","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Sneha Patel","Units_Sold":10,"Unit_Price":3671.74,"Total_Sales":31209.79,"Payment_Method":"UPI","Discount_%":15,"Profit":5503.45},{"Order_ID":"ORD-1248","Order_Date":"2025-02-05","Customer_Name":"Customer_249","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Sneha Patel","Units_Sold":12,"Unit_Price":3561.85,"Total_Sales":34193.76,"Payment_Method":"Net Banking","Discount_%":20,"Profit":13617.22},{"Order_ID":"ORD-1249","Order_Date":"2025-08-04","Customer_Name":"Customer_250","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Priya Nair","Units_Sold":5,"Unit_Price":3875.97,"Total_Sales":14534.89,"Payment_Method":"Debit Card","Discount_%":25,"Profit":4269.83},{"Order_ID":"ORD-1250","Order_Date":"2025-03-10","Customer_Name":"Customer_251","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Sneha Patel","Units_Sold":3,"Unit_Price":3477.11,"Total_Sales":7823.5,"Payment_Method":"Debit Card","Discount_%":25,"Profit":2834.97},{"Order_ID":"ORD-1251","Order_Date":"2025-01-12","Customer_Name":"Customer_252","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Sneha Patel","Units_Sold":17,"Unit_Price":811.27,"Total_Sales":13102.01,"Payment_Method":"Debit Card","Discount_%":5,"Profit":4591.55},{"Order_ID":"ORD-1252","Order_Date":"2025-06-27","Customer_Name":"Customer_253","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Sneha Patel","Units_Sold":18,"Unit_Price":2020.53,"Total_Sales":34551.06,"Payment_Method":"UPI","Discount_%":5,"Profit":6020.65},{"Order_ID":"ORD-1253","Order_Date":"2025-02-04","Customer_Name":"Customer_254","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Amit Shah","Units_Sold":14,"Unit_Price":3151.63,"Total_Sales":44122.82,"Payment_Method":"Credit Card","Discount_%":0,"Profit":7597.94},{"Order_ID":"ORD-1254","Order_Date":"2025-04-30","Customer_Name":"Customer_255","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Kiran Kumar","Units_Sold":2,"Unit_Price":1374.72,"Total_Sales":2749.44,"Payment_Method":"Cash","Discount_%":0,"Profit":606.75},{"Order_ID":"ORD-1255","Order_Date":"2025-10-23","Customer_Name":"Customer_256","City":"Chennai","Region":"South","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Kiran Kumar","Units_Sold":10,"Unit_Price":1323.98,"Total_Sales":9929.85,"Payment_Method":"Cash","Discount_%":25,"Profit":2709.19},{"Order_ID":"ORD-1256","Order_Date":"2025-10-13","Customer_Name":"Customer_257","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Priya Nair","Units_Sold":17,"Unit_Price":1261.01,"Total_Sales":19293.45,"Payment_Method":"Cash","Discount_%":10,"Profit":3521.95},{"Order_ID":"ORD-1257","Order_Date":"2025-12-10","Customer_Name":"Customer_258","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":425.04,"Total_Sales":6120.58,"Payment_Method":"Net Banking","Discount_%":10,"Profit":2340.97},{"Order_ID":"ORD-1258","Order_Date":"2025-08-31","Customer_Name":"Customer_259","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Sneha Patel","Units_Sold":5,"Unit_Price":1639.46,"Total_Sales":7787.43,"Payment_Method":"UPI","Discount_%":5,"Profit":2541.23},{"Order_ID":"ORD-1259","Order_Date":"2025-08-02","Customer_Name":"Customer_260","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Arjun Singh","Units_Sold":15,"Unit_Price":4590.76,"Total_Sales":55089.12,"Payment_Method":"Cash","Discount_%":20,"Profit":12329.12},{"Order_ID":"ORD-1260","Order_Date":"2025-08-19","Customer_Name":"Customer_261","City":"Jaipur","Region":"North","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Priya Nair","Units_Sold":9,"Unit_Price":1176.02,"Total_Sales":7938.14,"Payment_Method":"Debit Card","Discount_%":25,"Profit":982.12},{"Order_ID":"ORD-1261","Order_Date":"2025-02-07","Customer_Name":"Customer_262","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":2010.41,"Total_Sales":14474.95,"Payment_Method":"UPI","Discount_%":20,"Profit":4065.67},{"Order_ID":"ORD-1262","Order_Date":"2025-01-08","Customer_Name":"Customer_263","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Priya Nair","Units_Sold":16,"Unit_Price":1202.67,"Total_Sales":17318.45,"Payment_Method":"UPI","Discount_%":10,"Profit":3307.07},{"Order_ID":"ORD-1263","Order_Date":"2025-04-15","Customer_Name":"Customer_264","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Divya Mehta","Units_Sold":16,"Unit_Price":4589.32,"Total_Sales":55071.84,"Payment_Method":"Net Banking","Discount_%":25,"Profit":15492.84},{"Order_ID":"ORD-1264","Order_Date":"2025-06-07","Customer_Name":"Customer_265","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":2027.18,"Total_Sales":16217.44,"Payment_Method":"Debit Card","Discount_%":20,"Profit":4777.92},{"Order_ID":"ORD-1265","Order_Date":"2025-06-13","Customer_Name":"Customer_266","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":4053.52,"Total_Sales":12160.56,"Payment_Method":"UPI","Discount_%":25,"Profit":2928.84},{"Order_ID":"ORD-1266","Order_Date":"2025-05-14","Customer_Name":"Customer_267","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Amit Shah","Units_Sold":19,"Unit_Price":4347.61,"Total_Sales":61953.44,"Payment_Method":"Cash","Discount_%":25,"Profit":8907.47},{"Order_ID":"ORD-1267","Order_Date":"2025-05-06","Customer_Name":"Customer_268","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Rahul Gupta","Units_Sold":5,"Unit_Price":1141.72,"Total_Sales":5423.17,"Payment_Method":"Net Banking","Discount_%":5,"Profit":1160.3},{"Order_ID":"ORD-1268","Order_Date":"2025-08-24","Customer_Name":"Customer_269","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Rahul Gupta","Units_Sold":16,"Unit_Price":4839.24,"Total_Sales":58070.88,"Payment_Method":"UPI","Discount_%":25,"Profit":18691.75},{"Order_ID":"ORD-1269","Order_Date":"2025-01-31","Customer_Name":"Customer_270","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Divya Mehta","Units_Sold":18,"Unit_Price":2543.92,"Total_Sales":36632.45,"Payment_Method":"Cash","Discount_%":20,"Profit":14546.64},{"Order_ID":"ORD-1270","Order_Date":"2025-12-29","Customer_Name":"Customer_271","City":"Mumbai","Region":"West","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Arjun Singh","Units_Sold":1,"Unit_Price":2179.48,"Total_Sales":1634.61,"Payment_Method":"UPI","Discount_%":25,"Profit":276.95},{"Order_ID":"ORD-1271","Order_Date":"2025-11-12","Customer_Name":"Customer_272","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Sneha Patel","Units_Sold":12,"Unit_Price":490.16,"Total_Sales":4411.44,"Payment_Method":"Net Banking","Discount_%":25,"Profit":1323.55},{"Order_ID":"ORD-1272","Order_Date":"2025-05-21","Customer_Name":"Customer_273","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Kiran Kumar","Units_Sold":18,"Unit_Price":2174.42,"Total_Sales":39139.56,"Payment_Method":"Cash","Discount_%":0,"Profit":10130.31},{"Order_ID":"ORD-1273","Order_Date":"2025-02-19","Customer_Name":"Customer_274","City":"Hyderabad","Region":"South","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":4069.6,"Total_Sales":54125.68,"Payment_Method":"Cash","Discount_%":5,"Profit":7150.27},{"Order_ID":"ORD-1274","Order_Date":"2025-07-23","Customer_Name":"Customer_275","City":"Bangalore","Region":"South","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":1411.61,"Total_Sales":21597.63,"Payment_Method":"Credit Card","Discount_%":10,"Profit":3891.84},{"Order_ID":"ORD-1275","Order_Date":"2025-02-11","Customer_Name":"Customer_276","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Kiran Kumar","Units_Sold":8,"Unit_Price":4953.12,"Total_Sales":37643.71,"Payment_Method":"Credit Card","Discount_%":5,"Profit":7152.02},{"Order_ID":"ORD-1276","Order_Date":"2025-03-29","Customer_Name":"Customer_277","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Sneha Patel","Units_Sold":18,"Unit_Price":2484.82,"Total_Sales":33545.07,"Payment_Method":"Credit Card","Discount_%":25,"Profit":3449.61},{"Order_ID":"ORD-1277","Order_Date":"2025-12-21","Customer_Name":"Customer_278","City":"Ahmedabad","Region":"West","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Kiran Kumar","Units_Sold":4,"Unit_Price":4495.0,"Total_Sales":17980.0,"Payment_Method":"Cash","Discount_%":0,"Profit":3037.36},{"Order_ID":"ORD-1278","Order_Date":"2025-04-02","Customer_Name":"Customer_279","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":4516.7,"Total_Sales":32520.24,"Payment_Method":"Debit Card","Discount_%":20,"Profit":9672.59},{"Order_ID":"ORD-1279","Order_Date":"2025-05-04","Customer_Name":"Customer_280","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":4658.6,"Total_Sales":54505.62,"Payment_Method":"Cash","Discount_%":10,"Profit":8106.9},{"Order_ID":"ORD-1280","Order_Date":"2025-12-19","Customer_Name":"Customer_281","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Rahul Gupta","Units_Sold":13,"Unit_Price":3826.92,"Total_Sales":47262.46,"Payment_Method":"Credit Card","Discount_%":5,"Profit":15934.51},{"Order_ID":"ORD-1281","Order_Date":"2025-11-11","Customer_Name":"Customer_282","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Amit Shah","Units_Sold":4,"Unit_Price":2298.02,"Total_Sales":9192.08,"Payment_Method":"Cash","Discount_%":0,"Profit":1858.43},{"Order_ID":"ORD-1282","Order_Date":"2025-07-02","Customer_Name":"Customer_283","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Divya Mehta","Units_Sold":9,"Unit_Price":3961.03,"Total_Sales":30301.88,"Payment_Method":"Cash","Discount_%":15,"Profit":7490.05},{"Order_ID":"ORD-1283","Order_Date":"2025-06-01","Customer_Name":"Customer_284","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Divya Mehta","Units_Sold":19,"Unit_Price":3371.23,"Total_Sales":64053.37,"Payment_Method":"UPI","Discount_%":0,"Profit":21243.31},{"Order_ID":"ORD-1284","Order_Date":"2025-07-19","Customer_Name":"Customer_285","City":"Delhi","Region":"North","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":3616.05,"Total_Sales":35256.49,"Payment_Method":"Debit Card","Discount_%":25,"Profit":5157.43},{"Order_ID":"ORD-1285","Order_Date":"2025-02-14","Customer_Name":"Customer_286","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":2334.73,"Total_Sales":21012.57,"Payment_Method":"UPI","Discount_%":10,"Profit":2745.7},{"Order_ID":"ORD-1286","Order_Date":"2025-10-11","Customer_Name":"Customer_287","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":2158.61,"Total_Sales":36696.37,"Payment_Method":"Credit Card","Discount_%":0,"Profit":4656.24},{"Order_ID":"ORD-1287","Order_Date":"2025-02-13","Customer_Name":"Customer_288","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":13,"Unit_Price":259.23,"Total_Sales":2864.49,"Payment_Method":"Cash","Discount_%":15,"Profit":619.7},{"Order_ID":"ORD-1288","Order_Date":"2025-09-10","Customer_Name":"Customer_289","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":1013.61,"Total_Sales":11859.24,"Payment_Method":"UPI","Discount_%":10,"Profit":2257.28},{"Order_ID":"ORD-1289","Order_Date":"2025-05-07","Customer_Name":"Customer_290","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Rahul Gupta","Units_Sold":14,"Unit_Price":1638.81,"Total_Sales":22943.34,"Payment_Method":"Net Banking","Discount_%":0,"Profit":4779.96},{"Order_ID":"ORD-1290","Order_Date":"2025-06-20","Customer_Name":"Customer_291","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":850.35,"Total_Sales":3401.4,"Payment_Method":"Cash","Discount_%":0,"Profit":1308.34},{"Order_ID":"ORD-1291","Order_Date":"2025-03-11","Customer_Name":"Customer_292","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Rahul Gupta","Units_Sold":14,"Unit_Price":4114.28,"Total_Sales":43199.94,"Payment_Method":"Debit Card","Discount_%":25,"Profit":16945.94},{"Order_ID":"ORD-1292","Order_Date":"2025-05-30","Customer_Name":"Customer_293","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Sneha Patel","Units_Sold":11,"Unit_Price":1052.66,"Total_Sales":9842.37,"Payment_Method":"Net Banking","Discount_%":15,"Profit":3844.6},{"Order_ID":"ORD-1293","Order_Date":"2025-10-16","Customer_Name":"Customer_294","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Sneha Patel","Units_Sold":9,"Unit_Price":4119.17,"Total_Sales":31511.65,"Payment_Method":"UPI","Discount_%":15,"Profit":6601.84},{"Order_ID":"ORD-1294","Order_Date":"2025-12-29","Customer_Name":"Customer_295","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Divya Mehta","Units_Sold":18,"Unit_Price":329.2,"Total_Sales":4444.2,"Payment_Method":"UPI","Discount_%":25,"Profit":1059.88},{"Order_ID":"ORD-1295","Order_Date":"2025-05-04","Customer_Name":"Customer_296","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":3430.29,"Total_Sales":45622.86,"Payment_Method":"Debit Card","Discount_%":5,"Profit":13230.67},{"Order_ID":"ORD-1296","Order_Date":"2025-07-25","Customer_Name":"Customer_297","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Arjun Singh","Units_Sold":13,"Unit_Price":555.03,"Total_Sales":5772.31,"Payment_Method":"Cash","Discount_%":20,"Profit":1407.12},{"Order_ID":"ORD-1297","Order_Date":"2025-10-02","Customer_Name":"Customer_298","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Kiran Kumar","Units_Sold":2,"Unit_Price":3995.46,"Total_Sales":7191.83,"Payment_Method":"Cash","Discount_%":10,"Profit":2232.99},{"Order_ID":"ORD-1298","Order_Date":"2025-11-27","Customer_Name":"Customer_299","City":"Delhi","Region":"North","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Divya Mehta","Units_Sold":12,"Unit_Price":998.42,"Total_Sales":9584.83,"Payment_Method":"Net Banking","Discount_%":20,"Profit":1085.86},{"Order_ID":"ORD-1299","Order_Date":"2025-10-13","Customer_Name":"Customer_300","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Amit Shah","Units_Sold":4,"Unit_Price":1441.94,"Total_Sales":4614.21,"Payment_Method":"Cash","Discount_%":20,"Profit":1495.26},{"Order_ID":"ORD-1300","Order_Date":"2025-09-14","Customer_Name":"Customer_301","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Rahul Gupta","Units_Sold":13,"Unit_Price":2422.7,"Total_Sales":23621.32,"Payment_Method":"UPI","Discount_%":25,"Profit":6533.11},{"Order_ID":"ORD-1301","Order_Date":"2025-03-14","Customer_Name":"Customer_302","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":2196.68,"Total_Sales":21966.8,"Payment_Method":"Debit Card","Discount_%":0,"Profit":2961.58},{"Order_ID":"ORD-1302","Order_Date":"2025-08-13","Customer_Name":"Customer_303","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Arjun Singh","Units_Sold":7,"Unit_Price":2701.35,"Total_Sales":17018.51,"Payment_Method":"Net Banking","Discount_%":10,"Profit":4132.92},{"Order_ID":"ORD-1303","Order_Date":"2025-12-13","Customer_Name":"Customer_304","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Amit Shah","Units_Sold":4,"Unit_Price":308.41,"Total_Sales":1110.28,"Payment_Method":"UPI","Discount_%":10,"Profit":326.86},{"Order_ID":"ORD-1304","Order_Date":"2025-04-29","Customer_Name":"Customer_305","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Kiran Kumar","Units_Sold":6,"Unit_Price":1788.75,"Total_Sales":9122.62,"Payment_Method":"Net Banking","Discount_%":15,"Profit":3535.37},{"Order_ID":"ORD-1305","Order_Date":"2025-08-08","Customer_Name":"Customer_306","City":"Bangalore","Region":"South","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Sneha Patel","Units_Sold":1,"Unit_Price":3739.46,"Total_Sales":3552.49,"Payment_Method":"Net Banking","Discount_%":5,"Profit":834.38},{"Order_ID":"ORD-1306","Order_Date":"2025-10-02","Customer_Name":"Customer_307","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Priya Nair","Units_Sold":9,"Unit_Price":3811.16,"Total_Sales":34300.44,"Payment_Method":"UPI","Discount_%":0,"Profit":9371.03},{"Order_ID":"ORD-1307","Order_Date":"2025-11-24","Customer_Name":"Customer_308","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":1459.3,"Total_Sales":4961.62,"Payment_Method":"Debit Card","Discount_%":15,"Profit":1281.66},{"Order_ID":"ORD-1308","Order_Date":"2025-11-13","Customer_Name":"Customer_309","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Sneha Patel","Units_Sold":19,"Unit_Price":748.31,"Total_Sales":12796.1,"Payment_Method":"UPI","Discount_%":10,"Profit":4525.41},{"Order_ID":"ORD-1309","Order_Date":"2025-04-04","Customer_Name":"Customer_310","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":5,"Unit_Price":1703.29,"Total_Sales":8090.63,"Payment_Method":"Debit Card","Discount_%":5,"Profit":1550.28},{"Order_ID":"ORD-1310","Order_Date":"2025-09-07","Customer_Name":"Customer_311","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Sneha Patel","Units_Sold":20,"Unit_Price":861.76,"Total_Sales":14649.92,"Payment_Method":"Cash","Discount_%":15,"Profit":3324.24},{"Order_ID":"ORD-1311","Order_Date":"2025-11-14","Customer_Name":"Customer_312","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Sneha Patel","Units_Sold":10,"Unit_Price":873.42,"Total_Sales":7860.78,"Payment_Method":"Credit Card","Discount_%":10,"Profit":2771.68},{"Order_ID":"ORD-1312","Order_Date":"2025-09-11","Customer_Name":"Customer_313","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Priya Nair","Units_Sold":7,"Unit_Price":4113.04,"Total_Sales":23033.02,"Payment_Method":"Net Banking","Discount_%":20,"Profit":5795.83},{"Order_ID":"ORD-1313","Order_Date":"2025-04-23","Customer_Name":"Customer_314","City":"Ahmedabad","Region":"West","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Sneha Patel","Units_Sold":6,"Unit_Price":596.82,"Total_Sales":3580.92,"Payment_Method":"Debit Card","Discount_%":0,"Profit":1213.09},{"Order_ID":"ORD-1314","Order_Date":"2025-09-11","Customer_Name":"Customer_315","City":"Mumbai","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Kiran Kumar","Units_Sold":10,"Unit_Price":1007.4,"Total_Sales":8562.9,"Payment_Method":"Cash","Discount_%":15,"Profit":2309.37},{"Order_ID":"ORD-1315","Order_Date":"2025-01-22","Customer_Name":"Customer_316","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":3920.54,"Total_Sales":31756.37,"Payment_Method":"Net Banking","Discount_%":10,"Profit":8339.64},{"Order_ID":"ORD-1316","Order_Date":"2025-06-28","Customer_Name":"Customer_317","City":"Jaipur","Region":"North","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Amit Shah","Units_Sold":8,"Unit_Price":1629.0,"Total_Sales":13032.0,"Payment_Method":"Credit Card","Discount_%":0,"Profit":3061.47},{"Order_ID":"ORD-1317","Order_Date":"2025-08-08","Customer_Name":"Customer_318","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Priya Nair","Units_Sold":19,"Unit_Price":3507.84,"Total_Sales":49986.72,"Payment_Method":"UPI","Discount_%":25,"Profit":14150.17},{"Order_ID":"ORD-1318","Order_Date":"2025-05-24","Customer_Name":"Customer_319","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Arjun Singh","Units_Sold":7,"Unit_Price":4066.11,"Total_Sales":22770.22,"Payment_Method":"Cash","Discount_%":20,"Profit":4673.47},{"Order_ID":"ORD-1319","Order_Date":"2025-09-21","Customer_Name":"Customer_320","City":"Jaipur","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Divya Mehta","Units_Sold":10,"Unit_Price":1588.8,"Total_Sales":14299.2,"Payment_Method":"Credit Card","Discount_%":10,"Profit":5515.48},{"Order_ID":"ORD-1320","Order_Date":"2025-12-31","Customer_Name":"Customer_321","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Rahul Gupta","Units_Sold":5,"Unit_Price":3566.85,"Total_Sales":16942.54,"Payment_Method":"Debit Card","Discount_%":5,"Profit":2963.3},{"Order_ID":"ORD-1321","Order_Date":"2025-07-12","Customer_Name":"Customer_322","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Sneha Patel","Units_Sold":5,"Unit_Price":2971.64,"Total_Sales":13372.38,"Payment_Method":"Net Banking","Discount_%":10,"Profit":3855.84},{"Order_ID":"ORD-1322","Order_Date":"2025-07-08","Customer_Name":"Customer_323","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Sneha Patel","Units_Sold":17,"Unit_Price":3799.05,"Total_Sales":48437.89,"Payment_Method":"Net Banking","Discount_%":25,"Profit":18450.03},{"Order_ID":"ORD-1323","Order_Date":"2025-12-24","Customer_Name":"Customer_324","City":"Ahmedabad","Region":"West","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Amit Shah","Units_Sold":3,"Unit_Price":3708.47,"Total_Sales":9456.6,"Payment_Method":"Debit Card","Discount_%":15,"Profit":2746.69},{"Order_ID":"ORD-1324","Order_Date":"2025-05-26","Customer_Name":"Customer_325","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Priya Nair","Units_Sold":14,"Unit_Price":4159.27,"Total_Sales":49495.31,"Payment_Method":"Debit Card","Discount_%":15,"Profit":8936.93},{"Order_ID":"ORD-1325","Order_Date":"2025-01-24","Customer_Name":"Customer_326","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":3983.86,"Total_Sales":47806.32,"Payment_Method":"Credit Card","Discount_%":25,"Profit":15712.8},{"Order_ID":"ORD-1326","Order_Date":"2025-08-08","Customer_Name":"Customer_327","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Arjun Singh","Units_Sold":6,"Unit_Price":2318.17,"Total_Sales":13909.02,"Payment_Method":"UPI","Discount_%":0,"Profit":5529.55},{"Order_ID":"ORD-1327","Order_Date":"2025-07-10","Customer_Name":"Customer_328","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Priya Nair","Units_Sold":9,"Unit_Price":648.03,"Total_Sales":5249.04,"Payment_Method":"UPI","Discount_%":10,"Profit":919.2},{"Order_ID":"ORD-1328","Order_Date":"2025-01-01","Customer_Name":"Customer_329","City":"Mumbai","Region":"West","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Divya Mehta","Units_Sold":8,"Unit_Price":2260.31,"Total_Sales":18082.48,"Payment_Method":"UPI","Discount_%":0,"Profit":5625.63},{"Order_ID":"ORD-1329","Order_Date":"2025-12-23","Customer_Name":"Customer_330","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Kiran Kumar","Units_Sold":8,"Unit_Price":2693.33,"Total_Sales":18314.64,"Payment_Method":"Debit Card","Discount_%":15,"Profit":1882.49},{"Order_ID":"ORD-1330","Order_Date":"2025-02-22","Customer_Name":"Customer_331","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Sneha Patel","Units_Sold":3,"Unit_Price":1298.94,"Total_Sales":3896.82,"Payment_Method":"Credit Card","Discount_%":0,"Profit":1243.98},{"Order_ID":"ORD-1331","Order_Date":"2025-12-13","Customer_Name":"Customer_332","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Priya Nair","Units_Sold":13,"Unit_Price":3912.61,"Total_Sales":48320.73,"Payment_Method":"UPI","Discount_%":5,"Profit":14132.5},{"Order_ID":"ORD-1332","Order_Date":"2025-04-20","Customer_Name":"Customer_333","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":20,"Unit_Price":3320.1,"Total_Sales":56441.7,"Payment_Method":"UPI","Discount_%":15,"Profit":11590.66},{"Order_ID":"ORD-1333","Order_Date":"2025-03-05","Customer_Name":"Customer_334","City":"Kolkata","Region":"East","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Arjun Singh","Units_Sold":7,"Unit_Price":616.1,"Total_Sales":4312.7,"Payment_Method":"Cash","Discount_%":0,"Profit":612.42},{"Order_ID":"ORD-1334","Order_Date":"2025-10-11","Customer_Name":"Customer_335","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Rahul Gupta","Units_Sold":5,"Unit_Price":1389.37,"Total_Sales":5210.14,"Payment_Method":"Cash","Discount_%":25,"Profit":652.7},{"Order_ID":"ORD-1335","Order_Date":"2025-04-16","Customer_Name":"Customer_336","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Rahul Gupta","Units_Sold":1,"Unit_Price":4269.88,"Total_Sales":3202.41,"Payment_Method":"Cash","Discount_%":25,"Profit":1161.67},{"Order_ID":"ORD-1336","Order_Date":"2025-05-03","Customer_Name":"Customer_337","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":1618.6,"Total_Sales":21041.8,"Payment_Method":"Net Banking","Discount_%":0,"Profit":7051.96},{"Order_ID":"ORD-1337","Order_Date":"2025-06-12","Customer_Name":"Customer_338","City":"Kolkata","Region":"East","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Sneha Patel","Units_Sold":20,"Unit_Price":540.86,"Total_Sales":10817.2,"Payment_Method":"UPI","Discount_%":0,"Profit":4284.31},{"Order_ID":"ORD-1338","Order_Date":"2025-02-07","Customer_Name":"Customer_339","City":"Kolkata","Region":"East","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Rahul Gupta","Units_Sold":18,"Unit_Price":3478.12,"Total_Sales":53215.24,"Payment_Method":"Credit Card","Discount_%":15,"Profit":20558.96},{"Order_ID":"ORD-1339","Order_Date":"2025-07-23","Customer_Name":"Customer_340","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Rahul Gupta","Units_Sold":7,"Unit_Price":391.17,"Total_Sales":2738.19,"Payment_Method":"Cash","Discount_%":0,"Profit":1053.12},{"Order_ID":"ORD-1340","Order_Date":"2025-10-02","Customer_Name":"Customer_341","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":2233.16,"Total_Sales":26574.6,"Payment_Method":"Cash","Discount_%":15,"Profit":3314.61},{"Order_ID":"ORD-1341","Order_Date":"2025-03-21","Customer_Name":"Customer_342","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":579.3,"Total_Sales":5503.35,"Payment_Method":"Cash","Discount_%":5,"Profit":2158.93},{"Order_ID":"ORD-1342","Order_Date":"2025-05-03","Customer_Name":"Customer_343","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Divya Mehta","Units_Sold":3,"Unit_Price":1688.81,"Total_Sales":4306.47,"Payment_Method":"Credit Card","Discount_%":15,"Profit":1373.71},{"Order_ID":"ORD-1343","Order_Date":"2025-12-03","Customer_Name":"Customer_344","City":"Chennai","Region":"South","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Amit Shah","Units_Sold":15,"Unit_Price":3139.02,"Total_Sales":47085.3,"Payment_Method":"UPI","Discount_%":0,"Profit":9077.43},{"Order_ID":"ORD-1344","Order_Date":"2025-05-13","Customer_Name":"Customer_345","City":"Delhi","Region":"North","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Divya Mehta","Units_Sold":1,"Unit_Price":986.4,"Total_Sales":887.76,"Payment_Method":"UPI","Discount_%":10,"Profit":228.07},{"Order_ID":"ORD-1345","Order_Date":"2025-08-08","Customer_Name":"Customer_346","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Divya Mehta","Units_Sold":4,"Unit_Price":3902.87,"Total_Sales":15611.48,"Payment_Method":"Debit Card","Discount_%":0,"Profit":3130.15},{"Order_ID":"ORD-1346","Order_Date":"2025-07-04","Customer_Name":"Customer_347","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Divya Mehta","Units_Sold":19,"Unit_Price":3212.16,"Total_Sales":51876.38,"Payment_Method":"Credit Card","Discount_%":15,"Profit":12271.84},{"Order_ID":"ORD-1347","Order_Date":"2025-12-12","Customer_Name":"Customer_348","City":"Ahmedabad","Region":"West","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Rahul Gupta","Units_Sold":6,"Unit_Price":1424.56,"Total_Sales":8547.36,"Payment_Method":"Credit Card","Discount_%":0,"Profit":3147.83},{"Order_ID":"ORD-1348","Order_Date":"2025-08-30","Customer_Name":"Customer_349","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Amit Shah","Units_Sold":2,"Unit_Price":4321.71,"Total_Sales":8643.42,"Payment_Method":"Debit Card","Discount_%":0,"Profit":1498.47},{"Order_ID":"ORD-1349","Order_Date":"2025-08-03","Customer_Name":"Customer_350","City":"Kolkata","Region":"East","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Arjun Singh","Units_Sold":2,"Unit_Price":2853.75,"Total_Sales":4280.62,"Payment_Method":"UPI","Discount_%":25,"Profit":1379.21},{"Order_ID":"ORD-1350","Order_Date":"2025-03-03","Customer_Name":"Customer_351","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Divya Mehta","Units_Sold":11,"Unit_Price":1502.04,"Total_Sales":16522.44,"Payment_Method":"Cash","Discount_%":0,"Profit":4485.19},{"Order_ID":"ORD-1351","Order_Date":"2025-08-27","Customer_Name":"Customer_352","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Arjun Singh","Units_Sold":17,"Unit_Price":4910.79,"Total_Sales":70960.92,"Payment_Method":"Debit Card","Discount_%":15,"Profit":8563.42},{"Order_ID":"ORD-1352","Order_Date":"2025-06-05","Customer_Name":"Customer_353","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Kiran Kumar","Units_Sold":15,"Unit_Price":238.25,"Total_Sales":3395.06,"Payment_Method":"Cash","Discount_%":5,"Profit":636.5},{"Order_ID":"ORD-1353","Order_Date":"2025-10-07","Customer_Name":"Customer_354","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Kiran Kumar","Units_Sold":16,"Unit_Price":4989.38,"Total_Sales":75838.58,"Payment_Method":"UPI","Discount_%":5,"Profit":24248.55},{"Order_ID":"ORD-1354","Order_Date":"2025-01-05","Customer_Name":"Customer_355","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Amit Shah","Units_Sold":8,"Unit_Price":2799.42,"Total_Sales":16796.52,"Payment_Method":"Debit Card","Discount_%":25,"Profit":5910.23},{"Order_ID":"ORD-1355","Order_Date":"2025-08-03","Customer_Name":"Customer_356","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":698.96,"Total_Sales":5591.68,"Payment_Method":"Net Banking","Discount_%":20,"Profit":2208.35},{"Order_ID":"ORD-1356","Order_Date":"2025-07-10","Customer_Name":"Customer_357","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Amit Shah","Units_Sold":2,"Unit_Price":4622.12,"Total_Sales":7395.39,"Payment_Method":"Net Banking","Discount_%":20,"Profit":1655.95},{"Order_ID":"ORD-1357","Order_Date":"2025-10-18","Customer_Name":"Customer_358","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Kiran Kumar","Units_Sold":5,"Unit_Price":3258.64,"Total_Sales":13849.22,"Payment_Method":"Credit Card","Discount_%":15,"Profit":1695.83},{"Order_ID":"ORD-1358","Order_Date":"2025-07-21","Customer_Name":"Customer_359","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Priya Nair","Units_Sold":10,"Unit_Price":1452.76,"Total_Sales":13074.84,"Payment_Method":"Debit Card","Discount_%":10,"Profit":4939.84},{"Order_ID":"ORD-1359","Order_Date":"2025-10-27","Customer_Name":"Customer_360","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Priya Nair","Units_Sold":3,"Unit_Price":4729.06,"Total_Sales":13477.82,"Payment_Method":"Credit Card","Discount_%":5,"Profit":4501.34},{"Order_ID":"ORD-1360","Order_Date":"2025-04-17","Customer_Name":"Customer_361","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Sneha Patel","Units_Sold":15,"Unit_Price":1707.36,"Total_Sales":25610.4,"Payment_Method":"Net Banking","Discount_%":0,"Profit":6678.61},{"Order_ID":"ORD-1361","Order_Date":"2025-12-27","Customer_Name":"Customer_362","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Arjun Singh","Units_Sold":4,"Unit_Price":634.02,"Total_Sales":1902.06,"Payment_Method":"Cash","Discount_%":25,"Profit":363.8},{"Order_ID":"ORD-1362","Order_Date":"2025-01-26","Customer_Name":"Customer_363","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Priya Nair","Units_Sold":3,"Unit_Price":3613.56,"Total_Sales":9756.61,"Payment_Method":"Debit Card","Discount_%":10,"Profit":2135.46},{"Order_ID":"ORD-1363","Order_Date":"2025-08-25","Customer_Name":"Customer_364","City":"Hyderabad","Region":"South","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Sneha Patel","Units_Sold":15,"Unit_Price":2868.58,"Total_Sales":34422.96,"Payment_Method":"Credit Card","Discount_%":20,"Profit":6022.5},{"Order_ID":"ORD-1364","Order_Date":"2025-11-19","Customer_Name":"Customer_365","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Amit Shah","Units_Sold":8,"Unit_Price":827.43,"Total_Sales":5626.52,"Payment_Method":"Credit Card","Discount_%":15,"Profit":1190.98},{"Order_ID":"ORD-1365","Order_Date":"2025-11-27","Customer_Name":"Customer_366","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":3,"Unit_Price":304.64,"Total_Sales":913.92,"Payment_Method":"Net Banking","Discount_%":0,"Profit":145.61},{"Order_ID":"ORD-1366","Order_Date":"2025-10-21","Customer_Name":"Customer_367","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Amit Shah","Units_Sold":2,"Unit_Price":4722.95,"Total_Sales":9445.9,"Payment_Method":"Net Banking","Discount_%":0,"Profit":1420.63},{"Order_ID":"ORD-1367","Order_Date":"2025-05-21","Customer_Name":"Customer_368","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Sneha Patel","Units_Sold":14,"Unit_Price":1029.47,"Total_Sales":13691.95,"Payment_Method":"Debit Card","Discount_%":5,"Profit":5100.13},{"Order_ID":"ORD-1368","Order_Date":"2025-07-30","Customer_Name":"Customer_369","City":"Ahmedabad","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Kiran Kumar","Units_Sold":20,"Unit_Price":3161.49,"Total_Sales":47422.35,"Payment_Method":"Cash","Discount_%":25,"Profit":8940.61},{"Order_ID":"ORD-1369","Order_Date":"2025-09-27","Customer_Name":"Customer_370","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Rahul Gupta","Units_Sold":13,"Unit_Price":858.73,"Total_Sales":10605.32,"Payment_Method":"UPI","Discount_%":5,"Profit":3105.19},{"Order_ID":"ORD-1370","Order_Date":"2025-10-17","Customer_Name":"Customer_371","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Arjun Singh","Units_Sold":12,"Unit_Price":2502.49,"Total_Sales":25525.4,"Payment_Method":"Cash","Discount_%":15,"Profit":5187.02},{"Order_ID":"ORD-1371","Order_Date":"2025-05-24","Customer_Name":"Customer_372","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Priya Nair","Units_Sold":1,"Unit_Price":1730.61,"Total_Sales":1644.08,"Payment_Method":"Credit Card","Discount_%":5,"Profit":178.86},{"Order_ID":"ORD-1372","Order_Date":"2025-12-03","Customer_Name":"Customer_373","City":"Ahmedabad","Region":"West","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":19,"Unit_Price":4998.11,"Total_Sales":90215.89,"Payment_Method":"UPI","Discount_%":5,"Profit":11731.7},{"Order_ID":"ORD-1373","Order_Date":"2025-03-30","Customer_Name":"Customer_374","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Arjun Singh","Units_Sold":8,"Unit_Price":2963.32,"Total_Sales":20150.58,"Payment_Method":"UPI","Discount_%":15,"Profit":4159.91},{"Order_ID":"ORD-1374","Order_Date":"2025-06-30","Customer_Name":"Customer_375","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Arjun Singh","Units_Sold":12,"Unit_Price":4587.1,"Total_Sales":55045.2,"Payment_Method":"Cash","Discount_%":0,"Profit":17121.03},{"Order_ID":"ORD-1375","Order_Date":"2025-02-16","Customer_Name":"Customer_376","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Priya Nair","Units_Sold":16,"Unit_Price":2802.2,"Total_Sales":42593.44,"Payment_Method":"Credit Card","Discount_%":5,"Profit":10526.16},{"Order_ID":"ORD-1376","Order_Date":"2025-04-14","Customer_Name":"Customer_377","City":"Chennai","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Amit Shah","Units_Sold":17,"Unit_Price":2494.35,"Total_Sales":38163.56,"Payment_Method":"UPI","Discount_%":10,"Profit":14325.41},{"Order_ID":"ORD-1377","Order_Date":"2025-03-14","Customer_Name":"Customer_378","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Arjun Singh","Units_Sold":11,"Unit_Price":485.87,"Total_Sales":5077.34,"Payment_Method":"Credit Card","Discount_%":5,"Profit":1401.26},{"Order_ID":"ORD-1378","Order_Date":"2025-03-11","Customer_Name":"Customer_379","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Rahul Gupta","Units_Sold":13,"Unit_Price":3012.88,"Total_Sales":35250.7,"Payment_Method":"UPI","Discount_%":10,"Profit":6716.3},{"Order_ID":"ORD-1379","Order_Date":"2025-11-11","Customer_Name":"Customer_380","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Divya Mehta","Units_Sold":11,"Unit_Price":1036.17,"Total_Sales":9118.3,"Payment_Method":"Debit Card","Discount_%":20,"Profit":2809.06},{"Order_ID":"ORD-1380","Order_Date":"2025-03-07","Customer_Name":"Customer_381","City":"Chennai","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Arjun Singh","Units_Sold":6,"Unit_Price":2016.24,"Total_Sales":9073.08,"Payment_Method":"UPI","Discount_%":25,"Profit":2781.35},{"Order_ID":"ORD-1381","Order_Date":"2025-11-10","Customer_Name":"Customer_382","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Sneha Patel","Units_Sold":19,"Unit_Price":355.44,"Total_Sales":5402.69,"Payment_Method":"UPI","Discount_%":20,"Profit":1056.04},{"Order_ID":"ORD-1382","Order_Date":"2025-06-13","Customer_Name":"Customer_383","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Priya Nair","Units_Sold":11,"Unit_Price":3777.65,"Total_Sales":39476.44,"Payment_Method":"UPI","Discount_%":5,"Profit":8054.89},{"Order_ID":"ORD-1383","Order_Date":"2025-06-29","Customer_Name":"Customer_384","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Sneha Patel","Units_Sold":1,"Unit_Price":1473.02,"Total_Sales":1399.37,"Payment_Method":"Debit Card","Discount_%":5,"Profit":430.94},{"Order_ID":"ORD-1384","Order_Date":"2025-07-31","Customer_Name":"Customer_385","City":"Delhi","Region":"North","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Amit Shah","Units_Sold":13,"Unit_Price":2303.46,"Total_Sales":25453.23,"Payment_Method":"Net Banking","Discount_%":15,"Profit":9945.35},{"Order_ID":"ORD-1385","Order_Date":"2025-12-18","Customer_Name":"Customer_386","City":"Kolkata","Region":"East","Product_Category":"Clothing","Product_Name":"Formal Suit","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":4178.27,"Total_Sales":13370.46,"Payment_Method":"UPI","Discount_%":20,"Profit":3948.17},{"Order_ID":"ORD-1386","Order_Date":"2025-02-23","Customer_Name":"Customer_387","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Arjun Singh","Units_Sold":2,"Unit_Price":1615.56,"Total_Sales":2908.01,"Payment_Method":"Credit Card","Discount_%":10,"Profit":518.61},{"Order_ID":"ORD-1387","Order_Date":"2025-11-11","Customer_Name":"Customer_388","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Priya Nair","Units_Sold":3,"Unit_Price":2825.82,"Total_Sales":8477.46,"Payment_Method":"Net Banking","Discount_%":0,"Profit":1707.23},{"Order_ID":"ORD-1388","Order_Date":"2025-04-08","Customer_Name":"Customer_389","City":"Mumbai","Region":"West","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Kiran Kumar","Units_Sold":14,"Unit_Price":954.1,"Total_Sales":13357.4,"Payment_Method":"Net Banking","Discount_%":0,"Profit":2662.51},{"Order_ID":"ORD-1389","Order_Date":"2025-10-20","Customer_Name":"Customer_390","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Rahul Gupta","Units_Sold":10,"Unit_Price":1627.52,"Total_Sales":16275.2,"Payment_Method":"Cash","Discount_%":0,"Profit":1869.87},{"Order_ID":"ORD-1390","Order_Date":"2025-11-17","Customer_Name":"Customer_391","City":"Ahmedabad","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Rahul Gupta","Units_Sold":1,"Unit_Price":2252.51,"Total_Sales":2027.26,"Payment_Method":"Cash","Discount_%":10,"Profit":703.8},{"Order_ID":"ORD-1391","Order_Date":"2025-08-31","Customer_Name":"Customer_392","City":"Ahmedabad","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Amit Shah","Units_Sold":7,"Unit_Price":1019.99,"Total_Sales":6425.94,"Payment_Method":"Credit Card","Discount_%":10,"Profit":2526.15},{"Order_ID":"ORD-1392","Order_Date":"2025-07-09","Customer_Name":"Customer_393","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Sneha Patel","Units_Sold":9,"Unit_Price":637.46,"Total_Sales":4589.71,"Payment_Method":"Net Banking","Discount_%":20,"Profit":992.56},{"Order_ID":"ORD-1393","Order_Date":"2025-05-18","Customer_Name":"Customer_394","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":2310.75,"Total_Sales":18717.08,"Payment_Method":"Cash","Discount_%":10,"Profit":3142.09},{"Order_ID":"ORD-1394","Order_Date":"2025-10-29","Customer_Name":"Customer_395","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Amit Shah","Units_Sold":12,"Unit_Price":4079.26,"Total_Sales":41608.45,"Payment_Method":"UPI","Discount_%":15,"Profit":16277.71},{"Order_ID":"ORD-1395","Order_Date":"2025-09-01","Customer_Name":"Customer_396","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Arjun Singh","Units_Sold":17,"Unit_Price":2209.43,"Total_Sales":30048.25,"Payment_Method":"Cash","Discount_%":20,"Profit":9198.38},{"Order_ID":"ORD-1396","Order_Date":"2025-10-20","Customer_Name":"Customer_397","City":"Chennai","Region":"South","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Amit Shah","Units_Sold":13,"Unit_Price":4533.33,"Total_Sales":44199.97,"Payment_Method":"Cash","Discount_%":25,"Profit":4880.5},{"Order_ID":"ORD-1397","Order_Date":"2025-03-27","Customer_Name":"Customer_398","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Priya Nair","Units_Sold":4,"Unit_Price":4756.42,"Total_Sales":16171.83,"Payment_Method":"UPI","Discount_%":15,"Profit":2455.91},{"Order_ID":"ORD-1398","Order_Date":"2025-11-18","Customer_Name":"Customer_399","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Sneha Patel","Units_Sold":3,"Unit_Price":4943.74,"Total_Sales":12606.54,"Payment_Method":"UPI","Discount_%":15,"Profit":2024.31},{"Order_ID":"ORD-1399","Order_Date":"2025-06-16","Customer_Name":"Customer_400","City":"Lucknow","Region":"North","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Divya Mehta","Units_Sold":3,"Unit_Price":617.73,"Total_Sales":1482.55,"Payment_Method":"Debit Card","Discount_%":20,"Profit":324.98},{"Order_ID":"ORD-1400","Order_Date":"2025-03-18","Customer_Name":"Customer_401","City":"Jaipur","Region":"North","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Arjun Singh","Units_Sold":20,"Unit_Price":3020.37,"Total_Sales":51346.29,"Payment_Method":"UPI","Discount_%":15,"Profit":6867.86},{"Order_ID":"ORD-1401","Order_Date":"2025-05-27","Customer_Name":"Customer_402","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Arjun Singh","Units_Sold":4,"Unit_Price":4639.66,"Total_Sales":14846.91,"Payment_Method":"Cash","Discount_%":20,"Profit":4956.84},{"Order_ID":"ORD-1402","Order_Date":"2025-05-22","Customer_Name":"Customer_403","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":2945.71,"Total_Sales":40061.66,"Payment_Method":"Net Banking","Discount_%":15,"Profit":4456.45},{"Order_ID":"ORD-1403","Order_Date":"2025-01-26","Customer_Name":"Customer_404","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Divya Mehta","Units_Sold":13,"Unit_Price":386.16,"Total_Sales":4518.07,"Payment_Method":"Net Banking","Discount_%":10,"Profit":1387.74},{"Order_ID":"ORD-1404","Order_Date":"2025-12-17","Customer_Name":"Customer_405","City":"Hyderabad","Region":"South","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Rahul Gupta","Units_Sold":10,"Unit_Price":1692.56,"Total_Sales":14386.76,"Payment_Method":"Credit Card","Discount_%":15,"Profit":5142.84},{"Order_ID":"ORD-1405","Order_Date":"2025-08-02","Customer_Name":"Customer_406","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Divya Mehta","Units_Sold":15,"Unit_Price":3915.35,"Total_Sales":52857.22,"Payment_Method":"Cash","Discount_%":10,"Profit":9557.96},{"Order_ID":"ORD-1406","Order_Date":"2025-01-29","Customer_Name":"Customer_407","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Sofa Set","Sales_Rep":"Priya Nair","Units_Sold":14,"Unit_Price":3756.54,"Total_Sales":42073.25,"Payment_Method":"Cash","Discount_%":20,"Profit":15152.96},{"Order_ID":"ORD-1407","Order_Date":"2025-01-15","Customer_Name":"Customer_408","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Divya Mehta","Units_Sold":17,"Unit_Price":2136.25,"Total_Sales":29053.0,"Payment_Method":"UPI","Discount_%":20,"Profit":10569.47},{"Order_ID":"ORD-1408","Order_Date":"2025-05-21","Customer_Name":"Customer_409","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Priya Nair","Units_Sold":2,"Unit_Price":2390.95,"Total_Sales":4303.71,"Payment_Method":"Debit Card","Discount_%":10,"Profit":1340.13},{"Order_ID":"ORD-1409","Order_Date":"2025-11-01","Customer_Name":"Customer_410","City":"Ahmedabad","Region":"West","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Divya Mehta","Units_Sold":4,"Unit_Price":3469.64,"Total_Sales":13184.63,"Payment_Method":"Net Banking","Discount_%":5,"Profit":2791.71},{"Order_ID":"ORD-1410","Order_Date":"2025-12-19","Customer_Name":"Customer_411","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":1852.4,"Total_Sales":20005.92,"Payment_Method":"Credit Card","Discount_%":10,"Profit":6495.69},{"Order_ID":"ORD-1411","Order_Date":"2025-11-28","Customer_Name":"Customer_412","City":"Hyderabad","Region":"South","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Amit Shah","Units_Sold":6,"Unit_Price":4298.34,"Total_Sales":24500.54,"Payment_Method":"UPI","Discount_%":5,"Profit":8749.96},{"Order_ID":"ORD-1412","Order_Date":"2025-03-09","Customer_Name":"Customer_413","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Kiran Kumar","Units_Sold":1,"Unit_Price":4350.22,"Total_Sales":3262.66,"Payment_Method":"UPI","Discount_%":25,"Profit":334.98},{"Order_ID":"ORD-1413","Order_Date":"2025-12-30","Customer_Name":"Customer_414","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Rahul Gupta","Units_Sold":20,"Unit_Price":4064.41,"Total_Sales":73159.38,"Payment_Method":"Debit Card","Discount_%":10,"Profit":22959.03},{"Order_ID":"ORD-1414","Order_Date":"2025-11-16","Customer_Name":"Customer_415","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Sneha Patel","Units_Sold":9,"Unit_Price":1247.4,"Total_Sales":10103.94,"Payment_Method":"Net Banking","Discount_%":10,"Profit":3063.1},{"Order_ID":"ORD-1415","Order_Date":"2025-06-02","Customer_Name":"Customer_416","City":"Lucknow","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Kiran Kumar","Units_Sold":12,"Unit_Price":2894.99,"Total_Sales":27791.9,"Payment_Method":"Credit Card","Discount_%":20,"Profit":7857.19},{"Order_ID":"ORD-1416","Order_Date":"2025-11-30","Customer_Name":"Customer_417","City":"Ahmedabad","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Rahul Gupta","Units_Sold":11,"Unit_Price":4335.16,"Total_Sales":42918.08,"Payment_Method":"Debit Card","Discount_%":10,"Profit":12739.63},{"Order_ID":"ORD-1417","Order_Date":"2025-06-13","Customer_Name":"Customer_418","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Arjun Singh","Units_Sold":8,"Unit_Price":4518.5,"Total_Sales":28918.4,"Payment_Method":"UPI","Discount_%":20,"Profit":6397.6},{"Order_ID":"ORD-1418","Order_Date":"2025-01-19","Customer_Name":"Customer_419","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Microwave Oven","Sales_Rep":"Rahul Gupta","Units_Sold":9,"Unit_Price":4553.18,"Total_Sales":34831.83,"Payment_Method":"Cash","Discount_%":15,"Profit":7540.48},{"Order_ID":"ORD-1419","Order_Date":"2025-12-10","Customer_Name":"Customer_420","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Divya Mehta","Units_Sold":8,"Unit_Price":3494.33,"Total_Sales":20965.98,"Payment_Method":"Debit Card","Discount_%":25,"Profit":7033.44},{"Order_ID":"ORD-1420","Order_Date":"2025-05-13","Customer_Name":"Customer_421","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Arjun Singh","Units_Sold":18,"Unit_Price":1069.45,"Total_Sales":19250.1,"Payment_Method":"Cash","Discount_%":0,"Profit":4643.78},{"Order_ID":"ORD-1421","Order_Date":"2025-06-07","Customer_Name":"Customer_422","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Divya Mehta","Units_Sold":3,"Unit_Price":1266.82,"Total_Sales":3610.44,"Payment_Method":"Net Banking","Discount_%":5,"Profit":1167.12},{"Order_ID":"ORD-1422","Order_Date":"2025-11-21","Customer_Name":"Customer_423","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Kiran Kumar","Units_Sold":10,"Unit_Price":2426.05,"Total_Sales":24260.5,"Payment_Method":"Cash","Discount_%":0,"Profit":5850.69},{"Order_ID":"ORD-1423","Order_Date":"2025-06-02","Customer_Name":"Customer_424","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Sneha Patel","Units_Sold":7,"Unit_Price":2602.29,"Total_Sales":13662.02,"Payment_Method":"Net Banking","Discount_%":25,"Profit":2930.51},{"Order_ID":"ORD-1424","Order_Date":"2025-08-23","Customer_Name":"Customer_425","City":"Mumbai","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Priya Nair","Units_Sold":11,"Unit_Price":2164.12,"Total_Sales":19044.26,"Payment_Method":"UPI","Discount_%":20,"Profit":7005.5},{"Order_ID":"ORD-1425","Order_Date":"2025-06-10","Customer_Name":"Customer_426","City":"Pune","Region":"West","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Arjun Singh","Units_Sold":3,"Unit_Price":2540.39,"Total_Sales":5715.88,"Payment_Method":"Credit Card","Discount_%":25,"Profit":2263.44},{"Order_ID":"ORD-1426","Order_Date":"2025-02-15","Customer_Name":"Customer_427","City":"Mumbai","Region":"West","Product_Category":"Sports","Product_Name":"Running Shoes","Sales_Rep":"Priya Nair","Units_Sold":6,"Unit_Price":2966.14,"Total_Sales":16907.0,"Payment_Method":"UPI","Discount_%":5,"Profit":4173.88},{"Order_ID":"ORD-1427","Order_Date":"2025-10-01","Customer_Name":"Customer_428","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Sneha Patel","Units_Sold":14,"Unit_Price":4833.57,"Total_Sales":57519.48,"Payment_Method":"UPI","Discount_%":15,"Profit":5832.52},{"Order_ID":"ORD-1428","Order_Date":"2025-05-08","Customer_Name":"Customer_429","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Arjun Singh","Units_Sold":17,"Unit_Price":1114.77,"Total_Sales":14213.32,"Payment_Method":"UPI","Discount_%":25,"Profit":1438.92},{"Order_ID":"ORD-1429","Order_Date":"2025-01-24","Customer_Name":"Customer_430","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Amit Shah","Units_Sold":13,"Unit_Price":2616.02,"Total_Sales":30607.43,"Payment_Method":"Debit Card","Discount_%":10,"Profit":4594.36},{"Order_ID":"ORD-1430","Order_Date":"2025-06-25","Customer_Name":"Customer_431","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":17,"Unit_Price":1821.61,"Total_Sales":23225.53,"Payment_Method":"Net Banking","Discount_%":25,"Profit":9258.67},{"Order_ID":"ORD-1431","Order_Date":"2025-03-09","Customer_Name":"Customer_432","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Arjun Singh","Units_Sold":13,"Unit_Price":291.8,"Total_Sales":3603.73,"Payment_Method":"UPI","Discount_%":5,"Profit":1146.53},{"Order_ID":"ORD-1432","Order_Date":"2025-07-12","Customer_Name":"Customer_433","City":"Mumbai","Region":"West","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Priya Nair","Units_Sold":4,"Unit_Price":1959.64,"Total_Sales":5878.92,"Payment_Method":"Debit Card","Discount_%":25,"Profit":1984.95},{"Order_ID":"ORD-1433","Order_Date":"2025-01-25","Customer_Name":"Customer_434","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Kiran Kumar","Units_Sold":2,"Unit_Price":3377.46,"Total_Sales":5066.19,"Payment_Method":"Credit Card","Discount_%":25,"Profit":1777.4},{"Order_ID":"ORD-1434","Order_Date":"2025-12-22","Customer_Name":"Customer_435","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Amit Shah","Units_Sold":18,"Unit_Price":1413.14,"Total_Sales":19077.39,"Payment_Method":"Credit Card","Discount_%":25,"Profit":2784.12},{"Order_ID":"ORD-1435","Order_Date":"2025-08-03","Customer_Name":"Customer_436","City":"Hyderabad","Region":"South","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Divya Mehta","Units_Sold":17,"Unit_Price":1495.89,"Total_Sales":20344.1,"Payment_Method":"Credit Card","Discount_%":20,"Profit":6311.1},{"Order_ID":"ORD-1436","Order_Date":"2025-11-08","Customer_Name":"Customer_437","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":747.26,"Total_Sales":7472.6,"Payment_Method":"UPI","Discount_%":0,"Profit":1863.08},{"Order_ID":"ORD-1437","Order_Date":"2025-04-17","Customer_Name":"Customer_438","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Rahul Gupta","Units_Sold":14,"Unit_Price":1617.69,"Total_Sales":22647.66,"Payment_Method":"Net Banking","Discount_%":0,"Profit":5988.98},{"Order_ID":"ORD-1438","Order_Date":"2025-03-18","Customer_Name":"Customer_439","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Amit Shah","Units_Sold":3,"Unit_Price":4553.02,"Total_Sales":10927.25,"Payment_Method":"Credit Card","Discount_%":20,"Profit":3285.9},{"Order_ID":"ORD-1439","Order_Date":"2025-01-26","Customer_Name":"Customer_440","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Laptop Pro X","Sales_Rep":"Rahul Gupta","Units_Sold":8,"Unit_Price":2392.41,"Total_Sales":17225.35,"Payment_Method":"Credit Card","Discount_%":10,"Profit":3087.43},{"Order_ID":"ORD-1440","Order_Date":"2025-01-24","Customer_Name":"Customer_441","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Rahul Gupta","Units_Sold":11,"Unit_Price":2244.78,"Total_Sales":24692.58,"Payment_Method":"Credit Card","Discount_%":0,"Profit":3172.99},{"Order_ID":"ORD-1441","Order_Date":"2025-02-17","Customer_Name":"Customer_442","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Rahul Gupta","Units_Sold":12,"Unit_Price":4493.73,"Total_Sales":43139.81,"Payment_Method":"Debit Card","Discount_%":20,"Profit":7786.43},{"Order_ID":"ORD-1442","Order_Date":"2025-12-20","Customer_Name":"Customer_443","City":"Pune","Region":"West","Product_Category":"Furniture","Product_Name":"Office Chair","Sales_Rep":"Sneha Patel","Units_Sold":13,"Unit_Price":4819.09,"Total_Sales":56383.35,"Payment_Method":"Net Banking","Discount_%":10,"Profit":19774.35},{"Order_ID":"ORD-1443","Order_Date":"2025-03-23","Customer_Name":"Customer_444","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Amit Shah","Units_Sold":5,"Unit_Price":3541.62,"Total_Sales":17708.1,"Payment_Method":"Credit Card","Discount_%":0,"Profit":6985.33},{"Order_ID":"ORD-1444","Order_Date":"2025-07-03","Customer_Name":"Customer_445","City":"Kolkata","Region":"East","Product_Category":"Books","Product_Name":"Data Science Guide","Sales_Rep":"Arjun Singh","Units_Sold":19,"Unit_Price":3456.29,"Total_Sales":62386.03,"Payment_Method":"Cash","Discount_%":5,"Profit":17680.01},{"Order_ID":"ORD-1445","Order_Date":"2025-02-02","Customer_Name":"Customer_446","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":742.1,"Total_Sales":10092.56,"Payment_Method":"Debit Card","Discount_%":15,"Profit":2343.56},{"Order_ID":"ORD-1446","Order_Date":"2025-12-09","Customer_Name":"Customer_447","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Tablet Ultra","Sales_Rep":"Arjun Singh","Units_Sold":19,"Unit_Price":3674.11,"Total_Sales":66317.69,"Payment_Method":"Debit Card","Discount_%":5,"Profit":26087.3},{"Order_ID":"ORD-1447","Order_Date":"2025-12-06","Customer_Name":"Customer_448","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":14,"Unit_Price":3376.22,"Total_Sales":44903.73,"Payment_Method":"Net Banking","Discount_%":5,"Profit":10982.51},{"Order_ID":"ORD-1448","Order_Date":"2025-08-29","Customer_Name":"Customer_449","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Amit Shah","Units_Sold":1,"Unit_Price":3288.31,"Total_Sales":3123.89,"Payment_Method":"Net Banking","Discount_%":5,"Profit":786.19},{"Order_ID":"ORD-1449","Order_Date":"2025-04-25","Customer_Name":"Customer_450","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Rahul Gupta","Units_Sold":8,"Unit_Price":1788.3,"Total_Sales":12875.76,"Payment_Method":"Cash","Discount_%":10,"Profit":1482.07},{"Order_ID":"ORD-1450","Order_Date":"2025-09-13","Customer_Name":"Customer_451","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Dumbbell Set","Sales_Rep":"Amit Shah","Units_Sold":15,"Unit_Price":2332.11,"Total_Sales":27985.32,"Payment_Method":"Net Banking","Discount_%":20,"Profit":6560.59},{"Order_ID":"ORD-1451","Order_Date":"2025-10-09","Customer_Name":"Customer_452","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Smart TV 55\"","Sales_Rep":"Divya Mehta","Units_Sold":1,"Unit_Price":692.69,"Total_Sales":588.79,"Payment_Method":"Credit Card","Discount_%":15,"Profit":65.21},{"Order_ID":"ORD-1452","Order_Date":"2025-12-10","Customer_Name":"Customer_453","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Divya Mehta","Units_Sold":10,"Unit_Price":4472.53,"Total_Sales":35780.24,"Payment_Method":"Net Banking","Discount_%":20,"Profit":5798.38},{"Order_ID":"ORD-1453","Order_Date":"2025-11-14","Customer_Name":"Customer_454","City":"Pune","Region":"West","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Arjun Singh","Units_Sold":8,"Unit_Price":4252.72,"Total_Sales":30619.58,"Payment_Method":"Cash","Discount_%":10,"Profit":8207.43},{"Order_ID":"ORD-1454","Order_Date":"2025-06-24","Customer_Name":"Customer_455","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Divya Mehta","Units_Sold":15,"Unit_Price":747.31,"Total_Sales":8407.24,"Payment_Method":"Debit Card","Discount_%":25,"Profit":1400.01},{"Order_ID":"ORD-1455","Order_Date":"2025-07-29","Customer_Name":"Customer_456","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Rahul Gupta","Units_Sold":4,"Unit_Price":419.73,"Total_Sales":1594.97,"Payment_Method":"Credit Card","Discount_%":5,"Profit":395.12},{"Order_ID":"ORD-1456","Order_Date":"2025-04-08","Customer_Name":"Customer_457","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Priya Nair","Units_Sold":4,"Unit_Price":4665.04,"Total_Sales":15861.14,"Payment_Method":"Debit Card","Discount_%":15,"Profit":2611.96},{"Order_ID":"ORD-1457","Order_Date":"2025-10-29","Customer_Name":"Customer_458","City":"Delhi","Region":"North","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Divya Mehta","Units_Sold":19,"Unit_Price":791.45,"Total_Sales":12781.92,"Payment_Method":"Cash","Discount_%":15,"Profit":3032.08},{"Order_ID":"ORD-1458","Order_Date":"2025-09-05","Customer_Name":"Customer_459","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Yoga Mat","Sales_Rep":"Kiran Kumar","Units_Sold":2,"Unit_Price":2855.49,"Total_Sales":4854.33,"Payment_Method":"Cash","Discount_%":15,"Profit":1707.0},{"Order_ID":"ORD-1459","Order_Date":"2025-06-14","Customer_Name":"Customer_460","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Priya Nair","Units_Sold":5,"Unit_Price":697.06,"Total_Sales":2613.97,"Payment_Method":"Cash","Discount_%":25,"Profit":732.34},{"Order_ID":"ORD-1460","Order_Date":"2025-08-20","Customer_Name":"Customer_461","City":"Kolkata","Region":"East","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Divya Mehta","Units_Sold":8,"Unit_Price":1513.26,"Total_Sales":10895.47,"Payment_Method":"UPI","Discount_%":10,"Profit":4261.74},{"Order_ID":"ORD-1461","Order_Date":"2025-06-10","Customer_Name":"Customer_462","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Divya Mehta","Units_Sold":17,"Unit_Price":1634.78,"Total_Sales":20843.44,"Payment_Method":"Cash","Discount_%":25,"Profit":5509.79},{"Order_ID":"ORD-1462","Order_Date":"2025-12-30","Customer_Name":"Customer_463","City":"Chennai","Region":"South","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Kiran Kumar","Units_Sold":10,"Unit_Price":3495.73,"Total_Sales":26217.98,"Payment_Method":"UPI","Discount_%":25,"Profit":3665.31},{"Order_ID":"ORD-1463","Order_Date":"2025-10-20","Customer_Name":"Customer_464","City":"Jaipur","Region":"North","Product_Category":"Books","Product_Name":"Design Thinking","Sales_Rep":"Divya Mehta","Units_Sold":4,"Unit_Price":3851.72,"Total_Sales":12325.5,"Payment_Method":"Net Banking","Discount_%":20,"Profit":3008.79},{"Order_ID":"ORD-1464","Order_Date":"2025-01-28","Customer_Name":"Customer_465","City":"Jaipur","Region":"North","Product_Category":"Clothing","Product_Name":"T-Shirt Pack","Sales_Rep":"Arjun Singh","Units_Sold":1,"Unit_Price":2709.1,"Total_Sales":2709.1,"Payment_Method":"Credit Card","Discount_%":0,"Profit":580.45},{"Order_ID":"ORD-1465","Order_Date":"2025-06-01","Customer_Name":"Customer_466","City":"Chennai","Region":"South","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Rahul Gupta","Units_Sold":9,"Unit_Price":902.86,"Total_Sales":8125.74,"Payment_Method":"UPI","Discount_%":0,"Profit":2496.05},{"Order_ID":"ORD-1466","Order_Date":"2025-04-25","Customer_Name":"Customer_467","City":"Jaipur","Region":"North","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Arjun Singh","Units_Sold":15,"Unit_Price":691.9,"Total_Sales":7783.88,"Payment_Method":"Cash","Discount_%":25,"Profit":2505.22},{"Order_ID":"ORD-1467","Order_Date":"2025-07-18","Customer_Name":"Customer_468","City":"Kolkata","Region":"East","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":3526.09,"Total_Sales":35260.9,"Payment_Method":"Net Banking","Discount_%":0,"Profit":13326.7},{"Order_ID":"ORD-1468","Order_Date":"2025-11-21","Customer_Name":"Customer_469","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Amit Shah","Units_Sold":9,"Unit_Price":1174.82,"Total_Sales":8987.37,"Payment_Method":"Debit Card","Discount_%":15,"Profit":3136.55},{"Order_ID":"ORD-1469","Order_Date":"2025-02-08","Customer_Name":"Customer_470","City":"Lucknow","Region":"North","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Priya Nair","Units_Sold":7,"Unit_Price":1612.05,"Total_Sales":10720.13,"Payment_Method":"UPI","Discount_%":5,"Profit":4234.84},{"Order_ID":"ORD-1470","Order_Date":"2025-03-08","Customer_Name":"Customer_471","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Amit Shah","Units_Sold":13,"Unit_Price":395.04,"Total_Sales":4621.97,"Payment_Method":"UPI","Discount_%":10,"Profit":1233.97},{"Order_ID":"ORD-1471","Order_Date":"2025-06-15","Customer_Name":"Customer_472","City":"Lucknow","Region":"North","Product_Category":"Clothing","Product_Name":"Men's Jacket","Sales_Rep":"Rahul Gupta","Units_Sold":15,"Unit_Price":3606.51,"Total_Sales":51392.77,"Payment_Method":"Cash","Discount_%":5,"Profit":5755.07},{"Order_ID":"ORD-1472","Order_Date":"2025-02-07","Customer_Name":"Customer_473","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Arjun Singh","Units_Sold":10,"Unit_Price":2554.64,"Total_Sales":20437.12,"Payment_Method":"Debit Card","Discount_%":20,"Profit":5416.82},{"Order_ID":"ORD-1473","Order_Date":"2025-10-02","Customer_Name":"Customer_474","City":"Jaipur","Region":"North","Product_Category":"Furniture","Product_Name":"Standing Desk","Sales_Rep":"Kiran Kumar","Units_Sold":3,"Unit_Price":3974.04,"Total_Sales":11326.01,"Payment_Method":"Net Banking","Discount_%":5,"Profit":2545.85},{"Order_ID":"ORD-1474","Order_Date":"2025-11-13","Customer_Name":"Customer_475","City":"Delhi","Region":"North","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Priya Nair","Units_Sold":11,"Unit_Price":1789.12,"Total_Sales":17712.29,"Payment_Method":"Cash","Discount_%":10,"Profit":2931.98},{"Order_ID":"ORD-1475","Order_Date":"2025-11-15","Customer_Name":"Customer_476","City":"Ahmedabad","Region":"West","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Amit Shah","Units_Sold":12,"Unit_Price":2339.2,"Total_Sales":21052.8,"Payment_Method":"UPI","Discount_%":25,"Profit":5981.32},{"Order_ID":"ORD-1476","Order_Date":"2025-01-13","Customer_Name":"Customer_477","City":"Mumbai","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Sneha Patel","Units_Sold":4,"Unit_Price":2052.2,"Total_Sales":6567.04,"Payment_Method":"Cash","Discount_%":20,"Profit":2083.02},{"Order_ID":"ORD-1477","Order_Date":"2025-09-21","Customer_Name":"Customer_478","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Sneha Patel","Units_Sold":16,"Unit_Price":410.49,"Total_Sales":4925.88,"Payment_Method":"Credit Card","Discount_%":25,"Profit":777.08},{"Order_ID":"ORD-1478","Order_Date":"2025-04-20","Customer_Name":"Customer_479","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Kiran Kumar","Units_Sold":1,"Unit_Price":3209.28,"Total_Sales":3048.82,"Payment_Method":"Net Banking","Discount_%":5,"Profit":918.0},{"Order_ID":"ORD-1479","Order_Date":"2025-03-20","Customer_Name":"Customer_480","City":"Delhi","Region":"North","Product_Category":"Furniture","Product_Name":"Dining Table","Sales_Rep":"Arjun Singh","Units_Sold":14,"Unit_Price":3303.49,"Total_Sales":46248.86,"Payment_Method":"Credit Card","Discount_%":0,"Profit":14987.74},{"Order_ID":"ORD-1480","Order_Date":"2025-10-13","Customer_Name":"Customer_481","City":"Ahmedabad","Region":"West","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Amit Shah","Units_Sold":3,"Unit_Price":551.59,"Total_Sales":1572.03,"Payment_Method":"Credit Card","Discount_%":5,"Profit":531.76},{"Order_ID":"ORD-1481","Order_Date":"2025-01-09","Customer_Name":"Customer_482","City":"Lucknow","Region":"North","Product_Category":"Furniture","Product_Name":"Bookshelf","Sales_Rep":"Sneha Patel","Units_Sold":13,"Unit_Price":2365.4,"Total_Sales":26137.67,"Payment_Method":"Net Banking","Discount_%":15,"Profit":6009.25},{"Order_ID":"ORD-1482","Order_Date":"2025-12-25","Customer_Name":"Customer_483","City":"Delhi","Region":"North","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Divya Mehta","Units_Sold":20,"Unit_Price":503.54,"Total_Sales":7553.1,"Payment_Method":"Credit Card","Discount_%":25,"Profit":2082.26},{"Order_ID":"ORD-1483","Order_Date":"2025-08-13","Customer_Name":"Customer_484","City":"Pune","Region":"West","Product_Category":"Books","Product_Name":"Python Mastery","Sales_Rep":"Rahul Gupta","Units_Sold":10,"Unit_Price":3111.52,"Total_Sales":28003.68,"Payment_Method":"Net Banking","Discount_%":10,"Profit":9229.52},{"Order_ID":"ORD-1484","Order_Date":"2025-10-07","Customer_Name":"Customer_485","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Sneha Patel","Units_Sold":6,"Unit_Price":2760.65,"Total_Sales":15735.7,"Payment_Method":"Debit Card","Discount_%":5,"Profit":5098.78},{"Order_ID":"ORD-1485","Order_Date":"2025-01-03","Customer_Name":"Customer_486","City":"Bangalore","Region":"South","Product_Category":"Clothing","Product_Name":"Sneakers","Sales_Rep":"Amit Shah","Units_Sold":18,"Unit_Price":4398.88,"Total_Sales":75220.85,"Payment_Method":"Cash","Discount_%":5,"Profit":10303.04},{"Order_ID":"ORD-1486","Order_Date":"2025-06-26","Customer_Name":"Customer_487","City":"Lucknow","Region":"North","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":3,"Unit_Price":1662.52,"Total_Sales":3740.67,"Payment_Method":"UPI","Discount_%":25,"Profit":1206.1},{"Order_ID":"ORD-1487","Order_Date":"2025-04-10","Customer_Name":"Customer_488","City":"Kolkata","Region":"East","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Priya Nair","Units_Sold":6,"Unit_Price":1083.17,"Total_Sales":5199.22,"Payment_Method":"Credit Card","Discount_%":20,"Profit":1821.93},{"Order_ID":"ORD-1488","Order_Date":"2025-10-09","Customer_Name":"Customer_489","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Blender Pro","Sales_Rep":"Arjun Singh","Units_Sold":2,"Unit_Price":4286.66,"Total_Sales":6858.66,"Payment_Method":"Credit Card","Discount_%":20,"Profit":1634.96},{"Order_ID":"ORD-1489","Order_Date":"2025-06-19","Customer_Name":"Customer_490","City":"Hyderabad","Region":"South","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Rahul Gupta","Units_Sold":4,"Unit_Price":1147.6,"Total_Sales":3672.32,"Payment_Method":"Debit Card","Discount_%":20,"Profit":903.97},{"Order_ID":"ORD-1490","Order_Date":"2025-08-19","Customer_Name":"Customer_491","City":"Bangalore","Region":"South","Product_Category":"Home Appliances","Product_Name":"Coffee Maker","Sales_Rep":"Amit Shah","Units_Sold":10,"Unit_Price":3173.68,"Total_Sales":30149.96,"Payment_Method":"Debit Card","Discount_%":5,"Profit":5889.37},{"Order_ID":"ORD-1491","Order_Date":"2025-06-11","Customer_Name":"Customer_492","City":"Lucknow","Region":"North","Product_Category":"Home Appliances","Product_Name":"Vacuum Cleaner","Sales_Rep":"Divya Mehta","Units_Sold":19,"Unit_Price":931.5,"Total_Sales":14158.8,"Payment_Method":"Net Banking","Discount_%":20,"Profit":2964.12},{"Order_ID":"ORD-1492","Order_Date":"2025-07-04","Customer_Name":"Customer_493","City":"Bangalore","Region":"South","Product_Category":"Electronics","Product_Name":"Wireless Earbuds","Sales_Rep":"Priya Nair","Units_Sold":8,"Unit_Price":3618.56,"Total_Sales":21711.36,"Payment_Method":"UPI","Discount_%":25,"Profit":5011.79},{"Order_ID":"ORD-1493","Order_Date":"2025-03-31","Customer_Name":"Customer_494","City":"Pune","Region":"West","Product_Category":"Sports","Product_Name":"Cycling Helmet","Sales_Rep":"Sneha Patel","Units_Sold":12,"Unit_Price":3918.88,"Total_Sales":39972.58,"Payment_Method":"Cash","Discount_%":15,"Profit":10612.78},{"Order_ID":"ORD-1494","Order_Date":"2025-02-08","Customer_Name":"Customer_495","City":"Delhi","Region":"North","Product_Category":"Clothing","Product_Name":"Women's Dress","Sales_Rep":"Kiran Kumar","Units_Sold":7,"Unit_Price":1463.53,"Total_Sales":7683.53,"Payment_Method":"Credit Card","Discount_%":25,"Profit":944.6},{"Order_ID":"ORD-1495","Order_Date":"2025-01-19","Customer_Name":"Customer_496","City":"Jaipur","Region":"North","Product_Category":"Home Appliances","Product_Name":"Air Purifier","Sales_Rep":"Arjun Singh","Units_Sold":19,"Unit_Price":2978.72,"Total_Sales":45276.54,"Payment_Method":"Cash","Discount_%":20,"Profit":7417.57},{"Order_ID":"ORD-1496","Order_Date":"2025-10-29","Customer_Name":"Customer_497","City":"Hyderabad","Region":"South","Product_Category":"Books","Product_Name":"Leadership","Sales_Rep":"Sneha Patel","Units_Sold":5,"Unit_Price":1955.93,"Total_Sales":9290.67,"Payment_Method":"Debit Card","Discount_%":5,"Profit":3413.68},{"Order_ID":"ORD-1497","Order_Date":"2025-05-03","Customer_Name":"Customer_498","City":"Bangalore","Region":"South","Product_Category":"Sports","Product_Name":"Tennis Racket","Sales_Rep":"Kiran Kumar","Units_Sold":3,"Unit_Price":2104.57,"Total_Sales":5050.97,"Payment_Method":"Cash","Discount_%":20,"Profit":521.15},{"Order_ID":"ORD-1498","Order_Date":"2025-03-16","Customer_Name":"Customer_499","City":"Bangalore","Region":"South","Product_Category":"Books","Product_Name":"Business Strategy","Sales_Rep":"Sneha Patel","Units_Sold":6,"Unit_Price":1059.9,"Total_Sales":5087.52,"Payment_Method":"Net Banking","Discount_%":20,"Profit":1515.19},{"Order_ID":"ORD-1499","Order_Date":"2025-01-22","Customer_Name":"Customer_500","City":"Pune","Region":"West","Product_Category":"Electronics","Product_Name":"Smartphone Z","Sales_Rep":"Arjun Singh","Units_Sold":16,"Unit_Price":1312.4,"Total_Sales":18898.56,"Payment_Method":"UPI","Discount_%":10,"Profit":3984.39}];
+
+// ─── PALETTE ───────────────────────────────────────────────────
+const PALETTE = ['#5b7fff','#22c55e','#f59e0b','#14b8a6','#ec4899','#a78bfa','#fb923c','#38bdf8','#84cc16','#f87171'];
+const CAT_COLORS = {
+  'Electronics':'#5b7fff','Furniture':'#14b8a6','Clothing':'#ec4899',
+  'Sports':'#22c55e','Books':'#f59e0b','Home Appliances':'#a78bfa'
+};
+const PAY_COLORS = {'Credit Card':'#5b7fff','UPI':'#22c55e','Debit Card':'#f59e0b','Net Banking':'#14b8a6','Cash':'#ec4899'};
+
+// ─── CHARTS STORE ──────────────────────────────────────────────
+const charts = {};
+
+// ─── FORMAT HELPERS ───────────────────────────────────────────
+const fmt = v => {
+  if (v >= 1e7) return '₹' + (v/1e7).toFixed(1) + 'Cr';
+  if (v >= 1e5) return '₹' + (v/1e5).toFixed(1) + 'L';
+  if (v >= 1000) return '₹' + (v/1000).toFixed(1) + 'K';
+  return '₹' + Math.round(v).toLocaleString('en-IN');
+};
+const fmtFull = v => '₹' + Math.round(v).toLocaleString('en-IN');
+const pct = v => v.toFixed(1) + '%';
+
+// ─── POPULATE FILTERS ─────────────────────────────────────────
+(function populateFilters() {
+  const cities = [...new Set(RAW_DATA.map(d => d.City))].sort();
+  const cats   = [...new Set(RAW_DATA.map(d => d.Product_Category))].sort();
+  const reps   = [...new Set(RAW_DATA.map(d => d.Sales_Rep))].sort();
+  const sel = (id, arr) => arr.forEach(v => {
+    const o = document.createElement('option');
+    o.value = o.textContent = v;
+    document.getElementById(id).appendChild(o);
+  });
+  sel('filterCity', cities);
+  sel('filterCat', cats);
+  sel('filterRep', reps);
+})();
+
+// ─── FILTER LOGIC ─────────────────────────────────────────────
+function getFiltered() {
+  const from = document.getElementById('dateFrom').value;
+  const to   = document.getElementById('dateTo').value;
+  const city = document.getElementById('filterCity').value;
+  const cat  = document.getElementById('filterCat').value;
+  const rep  = document.getElementById('filterRep').value;
+  return RAW_DATA.filter(d => {
+    if (from && d.Order_Date < from) return false;
+    if (to   && d.Order_Date > to)   return false;
+    if (city && d.City !== city)     return false;
+    if (cat  && d.Product_Category !== cat) return false;
+    if (rep  && d.Sales_Rep !== rep) return false;
+    return true;
+  });
+}
+
+function resetFilters() {
+  document.getElementById('dateFrom').value = '2025-01-01';
+  document.getElementById('dateTo').value   = '2025-12-31';
+  document.getElementById('filterCity').value = '';
+  document.getElementById('filterCat').value  = '';
+  document.getElementById('filterRep').value  = '';
+  update();
+}
+
+// ─── CHART DEFAULTS ───────────────────────────────────────────
+Chart.defaults.color = '#8b90a0';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 11;
+const baseGrid = { color: 'rgba(255,255,255,0.05)', borderDash: [3,3] };
+const baseTick = { color: '#5a6070' };
+const baseTooltip = {
+  backgroundColor: '#1c2030',
+  borderColor: 'rgba(255,255,255,0.12)',
+  borderWidth: 1,
+  padding: 10,
+  titleColor: '#e8eaf0',
+  bodyColor: '#8b90a0',
+  cornerRadius: 7,
+  displayColors: true,
+  boxWidth: 8,
+  boxHeight: 8,
+  boxPadding: 4
+};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+// ─── AGGREGATION HELPERS ──────────────────────────────────────
+function groupBy(data, key, valKey = 'Total_Sales') {
+  const m = {};
+  data.forEach(d => {
+    const k = d[key];
+    m[k] = (m[k] || 0) + d[valKey];
+  });
+  return m;
+}
+function groupByMulti(data, key, valKeys) {
+  const m = {};
+  data.forEach(d => {
+    const k = d[key];
+    if (!m[k]) m[k] = {};
+    valKeys.forEach(v => { m[k][v] = (m[k][v] || 0) + d[v]; });
+  });
+  return m;
+}
+
+// ─── KPI UPDATE ───────────────────────────────────────────────
+function updateKPIs(data) {
+  const totalSales  = data.reduce((s,d) => s + d.Total_Sales, 0);
+  const totalProfit = data.reduce((s,d) => s + d.Profit, 0);
+  const totalOrders = data.length;
+  const aov = totalOrders ? totalSales / totalOrders : 0;
+  const profitMargin = totalSales ? (totalProfit / totalSales * 100) : 0;
+
+  document.getElementById('kpi-sales').textContent = fmt(totalSales);
+  document.getElementById('kpi-profit').textContent = fmt(totalProfit);
+  document.getElementById('kpi-orders').textContent = totalOrders.toLocaleString('en-IN');
+  document.getElementById('kpi-aov').textContent = fmt(aov);
+  document.getElementById('kpi-sales-meta').textContent = fmtFull(totalSales) + ' total';
+  document.getElementById('kpi-profit-meta').textContent = pct(profitMargin) + ' profit margin';
+  document.getElementById('kpi-orders-meta').textContent = totalOrders + ' transactions';
+  document.getElementById('kpi-aov-meta').textContent = 'per transaction average';
+}
+
+// ─── MONTHLY TREND ─────────────────────────────────────────────
+function renderMonthly(data) {
+  destroyChart('monthly');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const salesM = Array(12).fill(0), profitM = Array(12).fill(0);
+  data.forEach(d => {
+    const m = parseInt(d.Order_Date.split('-')[1]) - 1;
+    salesM[m] += d.Total_Sales;
+    profitM[m] += d.Profit;
+  });
+  charts['monthly'] = new Chart(document.getElementById('chartMonthly'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Sales',
+          data: salesM,
+          borderColor: '#5b7fff',
+          backgroundColor: 'rgba(91,127,255,0.08)',
+          tension: 0.4,
+          fill: true,
+          pointBackgroundColor: '#5b7fff',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          borderWidth: 2,
+          borderDash: []
+        },
+        {
+          label: 'Profit',
+          data: profitM,
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,0.06)',
+          tension: 0.4,
+          fill: true,
+          pointBackgroundColor: '#22c55e',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          borderWidth: 2,
+          borderDash: [5,3]
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...baseTooltip,
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw)
+          }
+        }
+      },
+      scales: {
+        x: { grid: baseGrid, ticks: baseTick, border: { color: 'transparent' } },
+        y: {
+          grid: baseGrid, ticks: { ...baseTick, callback: v => fmt(v) },
+          border: { color: 'transparent' }
+        }
+      }
+    }
+  });
+}
+
+// ─── CITY BAR ─────────────────────────────────────────────────
+function renderCity(data) {
+  destroyChart('city');
+  const g = groupBy(data, 'City');
+  const sorted = Object.entries(g).sort((a,b) => b[1]-a[1]);
+  charts['city'] = new Chart(document.getElementById('chartCity'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(x=>x[0]),
+      datasets: [{
+        label: 'Sales',
+        data: sorted.map(x=>x[1]),
+        backgroundColor: sorted.map((_,i) => PALETTE[i % PALETTE.length] + 'cc'),
+        borderColor: sorted.map((_,i) => PALETTE[i % PALETTE.length]),
+        borderWidth: 1,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...baseTooltip, callbacks: { label: ctx => ' ' + fmt(ctx.raw) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { ...baseTick, maxRotation: 30 }, border: { color: 'transparent' } },
+        y: { grid: baseGrid, ticks: { ...baseTick, callback: v => fmt(v) }, border: { color: 'transparent' } }
+      }
+    }
+  });
+}
+
+// ─── CATEGORY BAR ─────────────────────────────────────────────
+function renderCategory(data) {
+  destroyChart('cat');
+  const g = groupBy(data, 'Product_Category');
+  const cats = Object.keys(CAT_COLORS).filter(c => g[c] !== undefined);
+  const salesVals = cats.map(c => g[c] || 0);
+  const gP = groupBy(data, 'Product_Category', 'Profit');
+  const profitVals = cats.map(c => gP[c] || 0);
+  charts['cat'] = new Chart(document.getElementById('chartCat'), {
+    type: 'bar',
+    data: {
+      labels: cats.map(c => c.replace(' ', '\n')),
+      datasets: [
+        {
+          label: 'Sales',
+          data: salesVals,
+          backgroundColor: cats.map(c => (CAT_COLORS[c]||'#888') + 'cc'),
+          borderColor: cats.map(c => CAT_COLORS[c]||'#888'),
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false
+        },
+        {
+          label: 'Profit',
+          data: profitVals,
+          backgroundColor: cats.map(c => (CAT_COLORS[c]||'#888') + '55'),
+          borderColor: cats.map(c => (CAT_COLORS[c]||'#888') + '80'),
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+          borderDash: [4,2]
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...baseTooltip, callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { ...baseTick }, border: { color: 'transparent' } },
+        y: { grid: baseGrid, ticks: { ...baseTick, callback: v => fmt(v) }, border: { color: 'transparent' } }
+      }
+    }
+  });
+}
+
+// ─── SALES REP ─────────────────────────────────────────────────
+function renderRep(data) {
+  destroyChart('rep');
+  const g = groupBy(data, 'Sales_Rep');
+  const sorted = Object.entries(g).sort((a,b) => b[1]-a[1]);
+  const h = Math.max(280, sorted.length * 40 + 60);
+  document.getElementById('repWrap').style.height = h + 'px';
+  charts['rep'] = new Chart(document.getElementById('chartRep'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(x=>x[0]),
+      datasets: [{
+        label: 'Sales',
+        data: sorted.map(x=>x[1]),
+        backgroundColor: sorted.map((_,i) => PALETTE[i % PALETTE.length] + 'bb'),
+        borderColor: sorted.map((_,i) => PALETTE[i % PALETTE.length]),
+        borderWidth: 1,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...baseTooltip, callbacks: { label: ctx => ' ' + fmt(ctx.raw) } }
+      },
+      scales: {
+        x: { grid: baseGrid, ticks: { ...baseTick, callback: v => fmt(v) }, border: { color: 'transparent' } },
+        y: { grid: { display: false }, ticks: baseTick, border: { color: 'transparent' } }
+      }
+    }
+  });
+}
+
+// ─── PAYMENT PIE ──────────────────────────────────────────────
+function renderPayment(data) {
+  destroyChart('pay');
+  const g = groupBy(data, 'Payment_Method');
+  const labels = Object.keys(PAY_COLORS).filter(k => g[k]);
+  const vals = labels.map(k => g[k]);
+  const total = vals.reduce((a,b)=>a+b,0);
+  const legendEl = document.getElementById('payLegend');
+  legendEl.innerHTML = labels.map((l,i) =>
+    `<span class="legend-item"><span class="legend-dot" style="background:${PAY_COLORS[l]||PALETTE[i]}"></span>${l} ${pct(vals[i]/total*100)}</span>`
+  ).join('');
+  charts['pay'] = new Chart(document.getElementById('chartPay'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: labels.map(l => (PAY_COLORS[l]||'#888') + 'dd'),
+        borderColor: labels.map(l => PAY_COLORS[l]||'#888'),
+        borderWidth: 1.5,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...baseTooltip,
+          callbacks: {
+            label: ctx => ' ' + ctx.label + ': ' + ctx.raw.toLocaleString('en-IN') + ' orders (' + pct(ctx.raw/total*100) + ')'
+          }
+        }
+      }
+    }
+  });
+}
+
+// ─── PROFITABILITY ─────────────────────────────────────────────
+function renderProfitability(data) {
+  destroyChart('profit');
+  const cats = [...new Set(data.map(d => d.Product_Category))].sort();
+  const margins = cats.map(c => {
+    const rows = data.filter(d => d.Product_Category === c);
+    const s = rows.reduce((a,r)=>a+r.Total_Sales,0);
+    const p = rows.reduce((a,r)=>a+r.Profit,0);
+    return s ? p/s*100 : 0;
+  });
+  charts['profit'] = new Chart(document.getElementById('chartProfit'), {
+    type: 'bar',
+    data: {
+      labels: cats,
+      datasets: [{
+        label: 'Profit Margin %',
+        data: margins,
+        backgroundColor: cats.map(c => (CAT_COLORS[c]||'#888') + 'cc'),
+        borderColor: cats.map(c => CAT_COLORS[c]||'#888'),
+        borderWidth: 1,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...baseTooltip, callbacks: { label: ctx => ' ' + pct(ctx.raw) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { ...baseTick, maxRotation: 20 }, border: { color: 'transparent' } },
+        y: {
+          grid: baseGrid,
+          ticks: { ...baseTick, callback: v => pct(v) },
+          border: { color: 'transparent' },
+          min: 0
+        }
+      }
+    }
+  });
+}
+
+// ─── DISCOUNT IMPACT ───────────────────────────────────────────
+function renderDiscount(data) {
+  destroyChart('discount');
+  const buckets = {'0%':[],'5%':[],'10%':[],'15%':[],'20%':[],'25%':[]};
+  const bucketMap = {0:'0%',5:'5%',10:'10%',15:'15%',20:'20%',25:'25%'};
+  data.forEach(d => {
+    const b = bucketMap[d['Discount_%']];
+    if (b) buckets[b].push(d.Profit / d.Total_Sales * 100);
+  });
+  const labels = Object.keys(buckets).filter(k => buckets[k].length > 0);
+  const avgs = labels.map(k => {
+    const arr = buckets[k];
+    return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+  });
+  const colors = ['#22c55e','#5b7fff','#f59e0b','#14b8a6','#ec4899','#f87171'];
+  charts['discount'] = new Chart(document.getElementById('chartDiscount'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Avg Profit Margin %',
+        data: avgs,
+        backgroundColor: colors.map(c => c + 'cc'),
+        borderColor: colors,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...baseTooltip, callbacks: { label: ctx => ' Avg margin: ' + pct(ctx.raw) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: baseTick, border: { color: 'transparent' } },
+        y: {
+          grid: baseGrid,
+          ticks: { ...baseTick, callback: v => pct(v) },
+          border: { color: 'transparent' },
+          min: 0
+        }
+      }
+    }
+  });
+}
+
+// ─── TOP/BOTTOM PRODUCTS ──────────────────────────────────────
+function renderProducts(data) {
+  const g = groupByMulti(data, 'Product_Name', ['Total_Sales']);
+  const byProd = Object.entries(g).map(([name, v]) => ({
+    name,
+    cat: (data.find(d => d.Product_Name === name)||{}).Product_Category || '',
+    sales: v.Total_Sales
+  })).sort((a,b) => b.sales - a.sales);
+
+  const top5 = byProd.slice(0, 5);
+  const bot5 = byProd.slice(-5).reverse();
+  const maxSales = top5[0]?.sales || 1;
+
+  const renderList = (items, el, isTop) => {
+    el.innerHTML = '';
+    items.forEach((p,i) => {
+      const barPct = (p.sales / maxSales * 100).toFixed(1);
+      const color = isTop ? '#5b7fff' : '#ef4444';
+      el.innerHTML += `
+        <div class="product-item">
+          <div class="product-rank ${isTop?'rank-top':'rank-bot'}">${i+1}</div>
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div class="product-cat">${p.cat}</div>
+            <div class="product-bar-wrap"><div class="product-bar" style="width:${barPct}%;background:${color}"></div></div>
+          </div>
+          <div class="product-sales ${isTop?'top':'bot'}">${fmt(p.sales)}</div>
+        </div>`;
+    });
+  };
+  renderList(top5, document.getElementById('topProducts'), true);
+  renderList(bot5, document.getElementById('botProducts'), false);
+}
+
+// ─── MAIN UPDATE ──────────────────────────────────────────────
+function update() {
+  const data = getFiltered();
+  updateKPIs(data);
+  renderMonthly(data);
+  renderCity(data);
+  renderCategory(data);
+  renderRep(data);
+  renderPayment(data);
+  renderProfitability(data);
+  renderDiscount(data);
+  renderProducts(data);
+}
+
+// ─── EVENT LISTENERS ──────────────────────────────────────────
+['dateFrom','dateTo','filterCity','filterCat','filterRep'].forEach(id => {
+  document.getElementById(id).addEventListener('change', update);
+});
+
+// ─── INIT ─────────────────────────────────────────────────────
+update();
+</script>
+</body>
+</html>
